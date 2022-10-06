@@ -27,8 +27,7 @@ export default function Root() {
     return (
         <div className={"h-100 w-100"}>
             <Row className={"h-100"}>
-                <Col md={3}>
-                    <div id="sidebar">
+                <Col md={2}  id="sidebar">
                         <h1>React Router Contacts</h1>
                         <div>
                             <Form id="search-form" role="search">
@@ -94,14 +93,9 @@ export default function Root() {
                                 </p>
                             )}
                         </nav>
-                    </div>
                 </Col>
-                <Col md={9}>
-                    <div id="detail" className={
-                        navigation.state === "loading" ? "loading" : ""
-                    }>
-                        <Outlet />
-                    </div>
+                <Col md={10} id="detail" className={navigation.state === "loading" ? "loading" : ""}>
+                    <Outlet />
                 </Col>
             </Row>
         </div>
