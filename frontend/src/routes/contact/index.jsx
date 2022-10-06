@@ -4,7 +4,7 @@ export default function Index() {
             This is a demo for React Router.
             <br />
             Check out{" "}
-            <a href="https://reactrouter.com/">
+            <a href="frontend/src/routes/contact/index.jsx">
                 the docs at reactrouter.com
             </a>
             .

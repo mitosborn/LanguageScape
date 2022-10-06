@@ -6,39 +6,45 @@ import {
     Route,
 } from "react-router-dom";
 import "./index.css";
-import Root, { loader as rootLoader, action as rootAction } from "./routes/root";
+import Root, { loader as rootLoader, action as rootAction } from "./routes/contact/root.jsx";
 import ErrorPage from "./error-page.jsx";
-import Contact, {loader as contactLoader, action as contactAction} from "./routes/contact.jsx";
-import EditContact, {action as editAction} from "./routes/edit";
-import {action as destroyAction } from "./routes/delete";
-import Index from "./routes/index.jsx";
+import Contact, {loader as contactLoader, action as contactAction} from "./routes/contact/contact.jsx";
+import EditContact, {action as editAction} from "./routes/contact/edit.jsx";
+import {action as destroyAction } from "./routes/contact/delete.jsx";
+import Index from "./routes/contact/index.jsx";
+import Home from "./routes/home.jsx";
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root />,
+        element: <Home />,
         errorElement: <ErrorPage />,
-        loader: rootLoader,
-        action: rootAction,
+        // loader: rootLoader,
+        // action: rootAction,
         children:
             [
+                { index: true, element: <Index /> },
                 {
+                    path: "/contacts",
+                    element: <Root />,
                     errorElement: <ErrorPage />,
+                    loader: rootLoader,
+                    action: rootAction,
                     children: [
-                    { index: true, element: <Index /> },
                     {
-                        path: "contacts/:contactId",
+                        path: ":contactId",
                         element: <Contact />,
                         loader: contactLoader,
                         action: contactAction
                     },
                     {
-                        path: "contacts/:contactId/edit",
+                        path: ":contactId/edit",
                         element: <EditContact />,
                         loader: contactLoader,
                         action: editAction,
                     },
                     {
-                        path: "contacts/:contactId/destroy",
+                        path: ":contactId/destroy",
                         action: destroyAction,
                         errorElement: <div>Oops! There was an error.</div>
                     }
