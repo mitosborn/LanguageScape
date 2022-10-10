@@ -25,8 +25,8 @@ export default function Root() {
     }, [q]);
 
     return (
-        <div className={"h-100 w-100"}>
-            <Row className={"h-100"}>
+        <Container fluid={true}>
+            <Row>
                 <Col md={2}  id="sidebar">
                         <h1>React Router Contacts</h1>
                         <div>
@@ -98,7 +98,7 @@ export default function Root() {
                     <Outlet />
                 </Col>
             </Row>
-        </div>
+        </Container>
     );
 }
 
