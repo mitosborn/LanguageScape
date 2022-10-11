@@ -9,7 +9,7 @@ export async function action() {
     return redirect(`/contacts/${contact.id}/edit`);
 }
 
-export default function Root() {
+export default function ContactRoot() {
     const { contacts, q } = useLoaderData();
     const navigation = useNavigation();
     const submit = useSubmit();
@@ -25,8 +25,8 @@ export default function Root() {
     }, [q]);
 
     return (
-        <Container fluid={true}>
-            <Row>
+        <Container fluid={true} className={"p-0"}>
+            <Row className={"m-0 p-0"}>
                 <Col md={2}  id="sidebar">
                         <h1>React Router Contacts</h1>
                         <div>
@@ -94,7 +94,7 @@ export default function Root() {
                             )}
                         </nav>
                 </Col>
-                <Col md={10} id="detail" className={navigation.state === "loading" ? "loading" : ""}>
+                <Col md={10} id="detail" style={{"backgroundColor":"pink"}} className={navigation.state === "loading" ? "loading" : ""}>
                     <Outlet />
                 </Col>
             </Row>

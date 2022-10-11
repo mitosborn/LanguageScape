@@ -6,7 +6,7 @@ import {
     Route,
 } from "react-router-dom";
 import "./index.css";
-import Root, { loader as rootLoader, action as rootAction } from "./routes/contact/root.jsx";
+import ContactRoot, { loader as rootLoader, action as rootAction } from "./routes/contact/contactRoot.jsx";
 import ErrorPage from "./error-page.jsx";
 import Contact, {loader as contactLoader, action as contactAction} from "./routes/contact/contact.jsx";
 import EditContact, {action as editAction} from "./routes/contact/edit.jsx";
@@ -14,6 +14,8 @@ import {action as destroyAction } from "./routes/contact/delete.jsx";
 import Index from "./routes/contact/index.jsx";
 import Home from "./routes/home.jsx";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import MultipleChoiceQuestion, { loader as multipleChoiceLoader, action as multipleChoiceAction } from "./routes/practice/MultipleChoiceQuestion.jsx";
+import PracticeRoot from "./routes/practice/PracticeRoot.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
                 { index: true, element: <Index /> },
                 {
                     path: "/contacts",
-                    element: <Root />,
+                    element: <ContactRoot />,
                     errorElement: <ErrorPage />,
                     loader: rootLoader,
                     action: rootAction,
@@ -49,7 +51,34 @@ const router = createBrowserRouter([
                         errorElement: <div>Oops! There was an error.</div>
                     }
                 ]
+                },
+                {
+                    path: "/practice/deu-eng",
+                    element: <PracticeRoot />,
+                    errorElement: <ErrorPage />,
+                    loader: rootLoader,
+                    action: rootAction,
+                    children: [
+                        {
+                            path: "multipleChoice",
+                            element: <MultipleChoiceQuestion />,
+                            loader: multipleChoiceLoader,
+                            action: multipleChoiceAction
+                        },
+                        // {
+                        //     path: ":contactId/edit",
+                        //     element: <EditContact />,
+                        //     loader: contactLoader,
+                        //     action: editAction,
+                        // },
+                        // {
+                        //     path: ":contactId/destroy",
+                        //     action: destroyAction,
+                        //     errorElement: <div>Oops! There was an error.</div>
+                        // }
+                    ]
                 }
+
             ]
     },
 ]);
