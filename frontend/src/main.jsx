@@ -16,6 +16,9 @@ import Home from "./routes/home.jsx";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import MultipleChoiceQuestion, { loader as multipleChoiceLoader, action as multipleChoiceAction } from "./routes/practice/MultipleChoiceQuestion.jsx";
 import PracticeRoot from "./routes/practice/PracticeRoot.jsx";
+import {action as correctAction} from "./routes/practice/correct.jsx"
+import {action as incorrectAction} from "./routes/practice/incorrect.jsx"
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -65,20 +68,21 @@ const router = createBrowserRouter([
                             loader: multipleChoiceLoader,
                             action: multipleChoiceAction
                         },
-                        // {
-                        //     path: ":contactId/edit",
-                        //     element: <EditContact />,
-                        //     loader: contactLoader,
-                        //     action: editAction,
-                        // },
-                        // {
-                        //     path: ":contactId/destroy",
-                        //     action: destroyAction,
-                        //     errorElement: <div>Oops! There was an error.</div>
-                        // }
+                        {
+                            path: "correct/:questionId",
+                            action: correctAction,
+                            errorElement: <div>Oops! There was an error.</div>
+                        },
+                        {
+                            path: "incorrect/:questionId",
+                            action: incorrectAction,
+                            errorElement: <div>Oops! There was an error.</div>
+                        }
                     ]
                 }
-
+// langId/questionType
+    //deu-eng (Fetch available exercises/choices)
+            // Choose Fill-in-blank or Multiple Choice
             ]
     },
 ]);

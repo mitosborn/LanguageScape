@@ -7,8 +7,8 @@ import {Button, Col, FormControl, FormGroup, Row} from "react-bootstrap";
 
 export default function Home() {
     return (
-        <Container style={{"backgroundColor":"red"}} className={"main-container p-0"} fluid={true} >
-            <Row >
+        <Container className={"p-0"} fluid={true}>
+            <Row>
                 <Col>
                     <Navbar bg="primary" variant="dark">
                         <Container fluid={true}>

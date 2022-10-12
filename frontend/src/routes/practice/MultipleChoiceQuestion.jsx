@@ -2,8 +2,9 @@ import {Form, useFetcher, useLoaderData} from "react-router-dom";
 import { getContact, updateContact } from "../../contacts.js";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
-import {Button} from "@mui/material";
-
+import {Button, createTheme, ThemeProvider} from "@mui/material";
+import {useState} from "react";
+import { common } from '@mui/material/colors';
 export async function loader({ params }) {
     // const contact = await getContact(params.contactId);
     // if (!contact) {
@@ -23,6 +24,7 @@ export async function action({ request, params }) {
 }
 
 let question = {
+    id: 1,
     sentence : "Ich gehe ___ Berliner Kirche",
     answer: 1,
     choices: ["ins", "in die", "auf der", "zum"]
@@ -35,9 +37,30 @@ async function submit({ request, params }) {
     });
 }
 
-
 export default function MultipleChoiceQuestion() {
     const question = useLoaderData();
+    const [disableButton, setDisableButton] = useState(false)
+    const [selectedAnswerId, setSelectedAnswerId] = useState()
+    const [correctAnswer, setCorrectAnswer] = useState(false)
+    const style = createTheme({
+        palette: {
+            action: {
+                background: "blue",
+                disabled: "blue",
+                selectedOpacity: 100,
+                disabledOpacity: -1,
+                
+            },
+        }
+    });
+    // const []
+    // Disable button after clicking
+    function checkAnswer(answer) {
+        setDisableButton(true)
+        // setSelectedAnswerId(answer)
+        setCorrectAnswer(true)
+
+    }
     return (
             <Container id="question-container">
                 <Row>
@@ -47,24 +70,28 @@ export default function MultipleChoiceQuestion() {
                 </Row>
                 <Row className={"d-flex justify-content-center"}>
                     <Col md={4}>
-                        <div className="d-grid gap-3">
-                            <Button variant="primary" size="lg">
-                                {question.choices[0]}
-                            </Button>
-                            <Button variant="secondary" size="lg">
-                                {question.choices[1]}
-                            </Button>
-                        </div>
+                        <ThemeProvider theme={style}>
+                            <div className="d-grid gap-3">
+                                <Button disabled={disableButton} color={selectedAnswerId == 0 && correctAnswer? "success": selectedAnswerId == 0 && !correctAnswer ? "error" : "inherit"} variant="contained" size="lg" onClick={(e)=> checkAnswer(0)}>
+                                    {question.choices[0]}
+                                </Button>
+                                <Button disabled={disableButton} color={selectedAnswerId == 1 && correctAnswer? "success": selectedAnswerId == 1 && !correctAnswer ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(1)}>
+                                    {question.choices[1]}
+                                </Button>
+                            </div>
+                        </ThemeProvider>
                     </Col>
                     <Col md={4}>
-                        <div className="d-grid gap-3">
-                            <Button variant="primary" size="lg">
-                                {question.choices[2]}
-                            </Button>
-                            <Button variant="secondary" size="lg">
-                                {question.choices[3]}
-                            </Button>
-                        </div>
+                        <ThemeProvider theme={style}>
+                            <div className="d-grid gap-3">
+                                <Button disabled={disableButton} color={selectedAnswerId == 2 && correctAnswer? "success": selectedAnswerId == 2 && !correctAnswer ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(2)}>
+                                    {question.choices[2]}
+                                </Button>
+                                <Button disabled={disableButton} color={selectedAnswerId == 3 && correctAnswer? "success": selectedAnswerId == 3 && !correctAnswer ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(3)}>
+                                    {question.choices[3]}
+                                </Button>
+                            </div>
+                        </ThemeProvider>
                     </Col>
                 </Row>
 

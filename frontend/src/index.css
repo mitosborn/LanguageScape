@@ -1,11 +1,11 @@
 html {
-  box-sizing: border-box;
+  box-sizing: content-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
 }
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
+
 
 
 body {
@@ -98,19 +98,19 @@ form[action$="destroy"] button {
 }
 
 #root {
-  /*display: flex;*/
-  /*height: 100%;*/
-  /*width: 100%;*/
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 #home {
   /*height: 100%;*/
-  width: 100%;
+  /*width: 100%;*/
   background-color: tan;
 }
 
 #sidebar {
-  height: 93vh;
+  height: 95vh;
   width: 22rem;
   background-color: #f7f7f7;
   border-right: solid 1px #e3e3e3;
@@ -387,5 +387,10 @@ i {
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+#question-container {
+  /*background-color: #818181;*/
+  margin-top: 15vh;
 }
 
