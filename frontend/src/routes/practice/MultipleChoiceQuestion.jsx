@@ -1,46 +1,32 @@
-import {Form, useFetcher, useLoaderData} from "react-router-dom";
+import {Form, useActionData, useFetcher, useLoaderData, useSubmit} from "react-router-dom";
 import { getContact, updateContact } from "../../contacts.js";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
-import {Button, createTheme, ThemeProvider} from "@mui/material";
+import {Button} from "@mui/material";
 import {useState} from "react";
-import { common } from '@mui/material/colors';
+import {getNextQuestion, submitQuestion} from "./practice.js";
+
 export async function loader({ params }) {
-    // const contact = await getContact(params.contactId);
-    // if (!contact) {
-    //     throw new Response("", {
-    //         status: 404,
-    //         statusText: "Not Found",
-    //     });
-    // }
+    const question = await getNextQuestion();
+    if (!question) {
+        throw new Response("", {
+            status: 404,
+            statusText: "Not Found",
+        });
+    }
     return question;
 }
 
 export async function action({ request, params }) {
     let formData = await request.formData();
-    return updateContact(params.contactId, {
-        favorite: formData.get("favorite") === "true",
-    });
-}
-
-let question = {
-    id: 1,
-    sentence : "Ich gehe ___ Berliner Kirche",
-    answer: 1,
-    choices: ["ins", "in die", "auf der", "zum"]
-}
-
-async function submit({ request, params }) {
-    let formData = await request.formData();
-    return updateContact(params.contactId, {
-        favorite: formData.get("favorite") === "true",
-    });
+    return submitQuestion(formData);
 }
 
 export default function MultipleChoiceQuestion() {
     const question = useLoaderData();
     const [selectedAnswerId, setSelectedAnswerId] = useState()
     const [questionAnswered, setQuestionAnswered] = useState(false)
+    const submit = useSubmit();
 
     function checkAnswer(answer) {
         console.log(answer)
@@ -48,6 +34,18 @@ export default function MultipleChoiceQuestion() {
             setQuestionAnswered(true)
             setSelectedAnswerId(answer)
         }
+    }
+
+    async function submitAnswer() {
+        let formData = new FormData();
+        formData.append("answer", "false")
+        formData.append("id", "mbo2")
+        submit(formData, {method: "post"})
+    }
+
+    function nextQuestion() {
+
+
     }
     return (
             <Container id="question-container">
@@ -74,7 +72,18 @@ export default function MultipleChoiceQuestion() {
                         </div>
                     </Col>
                 </Row>
-
+                <Row>
+                    <Col>
+                        <div className={"d-flex justify-content-center my-4 gap-3"}>
+                            <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> nextQuestion()}>
+                                {"Next Question"}
+                            </Button>
+                            <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> submitAnswer()}>
+                                {"Submit"}
+                            </Button>
+                        </div>
+                    </Col>
+                </Row>
             </Container>
     );
 }

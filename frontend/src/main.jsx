@@ -16,8 +16,7 @@ import Home from "./routes/home.jsx";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import MultipleChoiceQuestion, { loader as multipleChoiceLoader, action as multipleChoiceAction } from "./routes/practice/MultipleChoiceQuestion.jsx";
 import PracticeRoot from "./routes/practice/PracticeRoot.jsx";
-import {action as correctAction} from "./routes/practice/correct.jsx"
-import {action as incorrectAction} from "./routes/practice/incorrect.jsx"
+import {action as submitAction} from "./routes/practice/submit.jsx"
 
 const router = createBrowserRouter([
     {
@@ -56,28 +55,28 @@ const router = createBrowserRouter([
                 ]
                 },
                 {
-                    path: "/practice/deu-eng",
+                    path: "/practice/:language",
                     element: <PracticeRoot />,
                     errorElement: <ErrorPage />,
                     loader: rootLoader,
                     action: rootAction,
                     children: [
                         {
-                            path: "multipleChoice",
+                            path: ":mode",
                             element: <MultipleChoiceQuestion />,
                             loader: multipleChoiceLoader,
                             action: multipleChoiceAction
                         },
                         {
-                            path: "correct/:questionId",
-                            action: correctAction,
+                            path: "submit",
+                            action: submitAction,
                             errorElement: <div>Oops! There was an error.</div>
                         },
-                        {
-                            path: "incorrect/:questionId",
-                            action: incorrectAction,
-                            errorElement: <div>Oops! There was an error.</div>
-                        }
+                        // {
+                        //     path: "incorrect/:questionId",
+                        //     action: incorrectAction,
+                        //     errorElement: <div>Oops! There was an error.</div>
+                        // }
                     ]
                 }
 // langId/questionType
