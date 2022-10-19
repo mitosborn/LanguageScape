@@ -11,9 +11,9 @@ questions = [{
     },
     {
         "id": 2,
-        "sentence": "Ich bin stärker als meine Angst",
+        "sentence": "Ich bin _______ als meine Angst",
         "answer": 1,
-        "choices": ["ins", "in die", "auf der", "zum"]
+        "choices": ["besser", "stärker", "schwacher", "großer"]
     }]
 
 

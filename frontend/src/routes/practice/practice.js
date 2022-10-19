@@ -2,7 +2,7 @@ import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
 
-export async function getNextQuestion(query) {
+export async function getQuestions(query) {
     // await fakeNetwork(`getContacts:${query}`);
     // let contacts = await localforage.getItem("contacts");
     // if (!contacts) contacts = [];
@@ -11,12 +11,11 @@ export async function getNextQuestion(query) {
     // }
     let questions = await (await fetch("http://127.0.0.1:5000/question")).json()
     console.log(questions)
-    return questions[1];
+    return questions;
 }
 
 export async function submitQuestion(query) {
     console.log(query)
-    return question2;
 }
 
 

@@ -4,17 +4,17 @@ import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
 import {Button} from "@mui/material";
 import {useState} from "react";
-import {getNextQuestion, submitQuestion} from "./practice.js";
-
+import {getQuestions, submitQuestion} from "./practice.js";
+// TODO: Get all questions in one batch and iterate through them/use setQuestion()
 export async function loader({ params }) {
-    const question = await getNextQuestion();
-    if (!question) {
+    const questions = await getQuestions();
+    if (!questions) {
         throw new Response("", {
             status: 404,
             statusText: "Not Found",
         });
     }
-    return question;
+    return questions;
 }
 
 export async function action({ request, params }) {
@@ -23,7 +23,9 @@ export async function action({ request, params }) {
 }
 
 export default function MultipleChoiceQuestion() {
-    const question = useLoaderData();
+    let questionIdx = 0
+    const questions = useLoaderData();
+    const [question, setCurrentQuestion] = useState(questions[questionIdx])
     const [selectedAnswerId, setSelectedAnswerId] = useState()
     const [questionAnswered, setQuestionAnswered] = useState(false)
     const submit = useSubmit();
@@ -44,7 +46,9 @@ export default function MultipleChoiceQuestion() {
     }
 
     function nextQuestion() {
-
+        setCurrentQuestion(questions[++questionIdx])
+        setSelectedAnswerId(null)
+        setQuestionAnswered(false)
 
     }
     return (
