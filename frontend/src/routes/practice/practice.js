@@ -2,20 +2,6 @@ import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
 
-let question = {
-    id: 1,
-    sentence : "Ich gehe ___ Berliner Kirche",
-    answer: 1,
-    choices: ["ins", "in die", "auf der", "zum"]
-}
-
-let question2 = {
-    id: 2,
-    sentence : "Ich bin stärker als meine Angst",
-    answer: 1,
-    choices: ["ins", "in die", "auf der", "zum"]
-}
-
 export async function getNextQuestion(query) {
     // await fakeNetwork(`getContacts:${query}`);
     // let contacts = await localforage.getItem("contacts");
@@ -23,7 +9,9 @@ export async function getNextQuestion(query) {
     // if (query) {
     //     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
     // }
-    return question;
+    let questions = await (await fetch("http://127.0.0.1:5000/question")).json()
+    console.log(questions)
+    return questions[1];
 }
 
 export async function submitQuestion(query) {
