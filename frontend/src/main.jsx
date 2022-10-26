@@ -14,7 +14,8 @@ import {action as destroyAction } from "./routes/contact/delete.jsx";
 import Index from "./routes/contact/index.jsx";
 import Home from "./routes/home.jsx";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import MultipleChoiceQuestion, { loader as multipleChoiceLoader, action as multipleChoiceAction } from "./routes/practice/MultipleChoiceQuestion.jsx";
+import MultipleChoiceQuestion, { loader as multipleChoiceLoader} from "./routes/practice/MultipleChoiceQuestion.jsx";
+import Summary, {loader as summaryLoader} from "./routes/practice/Summary.jsx";
 import PracticeRoot from "./routes/practice/PracticeRoot.jsx";
 import {action as submitAction} from "./routes/practice/submit.jsx"
 
@@ -62,22 +63,28 @@ const router = createBrowserRouter([
                     action: rootAction,
                     children: [
                         {
-                            path: ":mode",
+                            path: ":mode/:currentQuestion/:numQuestions",
                             element: <MultipleChoiceQuestion />,
                             loader: multipleChoiceLoader,
-                            action: multipleChoiceAction
+                            // action: multipleChoiceAction
                         },
-                        {
-                            path: "submit",
-                            action: submitAction,
-                            errorElement: <div>Oops! There was an error.</div>
-                        },
+                        // {
+                        //     path: "submit",
+                        //     action: submitAction,
+                        //     errorElement: <div>Oops! There was an error.</div>
+                        // },
+
                         // {
                         //     path: "incorrect/:questionId",
                         //     action: incorrectAction,
                         //     errorElement: <div>Oops! There was an error.</div>
                         // }
                     ]
+                },
+                {
+                    path: "/summary",
+                    element: <Summary />,
+                    loader: summaryLoader,
                 }
 // langId/questionType
     //deu-eng (Fetch available exercises/choices)

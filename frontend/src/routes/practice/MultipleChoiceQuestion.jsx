@@ -1,5 +1,13 @@
-import {Form, useActionData, useFetcher, useLoaderData, useSubmit} from "react-router-dom";
-import { getContact, updateContact } from "../../contacts.js";
+import {
+    Form,
+    redirect,
+    useActionData,
+    useFetcher,
+    useLoaderData,
+    useNavigate,
+    useParams,
+    useSubmit
+} from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
 import {Button} from "@mui/material";
@@ -7,29 +15,36 @@ import {useState} from "react";
 import {getQuestions, submitQuestion} from "./practice.js";
 // TODO: Get all questions in one batch and iterate through them/use setQuestion()
 export async function loader({ params }) {
-    const questions = await getQuestions();
+    const questions = await getQuestions(params.numQuestions);
     if (!questions) {
         throw new Response("", {
             status: 404,
-            statusText: "Not Found",
+            statusText: "ERROR: No questions from backend",
         });
     }
     return questions;
 }
 
-export async function action({ request, params }) {
-    let formData = await request.formData();
-    return submitQuestion(formData);
-}
-
+// export async function action({ request, params }) {
+//     let formData = await request.formData();
+//     // Send request to backend
+//     let sessionID = 1
+//     console.log("Called MC action")
+//     console.log(request, params)
+//     return redirect(`/summary`)
+// }
+// Send data back to backend -> backend returns session ID w/ summary of num right/wrong, etc
 export default function MultipleChoiceQuestion() {
     let questionIdx = 0
+    const questionsCorrect = useState({})
     const questions = useLoaderData();
     const [question, setCurrentQuestion] = useState(questions[questionIdx])
     const [selectedAnswerId, setSelectedAnswerId] = useState()
     const [questionAnswered, setQuestionAnswered] = useState(false)
     const submit = useSubmit();
-
+    const navigate = useNavigate();
+    const params = useParams()
+    console.log(params)
     function checkAnswer(answer) {
         console.log(answer)
         if (selectedAnswerId == null) {
@@ -39,12 +54,14 @@ export default function MultipleChoiceQuestion() {
     }
 
     async function submitAnswer() {
-        let formData = new FormData();
-        formData.append("answer", "false")
-        formData.append("id", "mbo2")
-        submit(formData, {method: "post"})
+        // let formData = new FormData();
+        // formData.append("answer", "false")
+        // formData.append("id", "mbo2")
+        // submit(formData, {method: "post"})
+        navigate("/summary", {
+            state: { ...params }
+        })
     }
-
     function nextQuestion() {
         setCurrentQuestion(questions[++questionIdx])
         setSelectedAnswerId(null)
@@ -55,7 +72,7 @@ export default function MultipleChoiceQuestion() {
             <Container id="question-container">
                 <Row>
                     <Col className={"d-flex justify-content-center m-5"}>
-                            <h1>{question.sentence}</h1>
+                        {questionAnswered? <h1 >{question.sentence}</h1>: <h1 >{question.sentence.replace(question.choices[question['answer']], '_'.repeat(question.choices[question['answer']].length))}</h1>}
                     </Col>
                 </Row>
                 <Row className={"d-flex justify-content-center"}>
@@ -83,7 +100,7 @@ export default function MultipleChoiceQuestion() {
                                 {"Next Question"}
                             </Button>
                             <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> submitAnswer()}>
-                                {"Submit"}
+                                {"Summary"}
                             </Button>
                         </div>
                     </Col>
