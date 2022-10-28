@@ -1,7 +1,7 @@
 import {
+    redirect,
     useLoaderData,
-    useNavigate,
-    useParams,
+    useParams, useSubmit,
 } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
@@ -10,6 +10,7 @@ import {useState} from "react";
 import {getQuestions} from "./practice.js";
 import SessionSummary from "./SessionSummary.jsx";
 import PracticeNavBar from "./PracticeNavBar.jsx";
+import {updateContact} from "../../contacts.js";
 // TODO: Get all questions in one batch and iterate through them/use setQuestion()
 export async function loader({ params }) {
     const questions = await getQuestions(params.numQuestions);
@@ -23,47 +24,46 @@ export async function loader({ params }) {
     return questions;
 }
 
-// export async function action({ request, params }) {
-//     let formData = await request.formData();
-//     // Send request to backend
-//     let sessionID = 1
-//     console.log("Called MC action")
-//     console.log(request, params)
-//     return redirect(`/summary`)
-// }
+export async function action({ request, params }) {
+    const {language, mode, currentQuestion, numQuestions} = params
+    return redirect(`/practice/${language}/${mode}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`);
+}
+
 // Send data back to backend -> backend returns session ID w/ summary of num right/wrong, etc
 export default function MultipleChoiceQuestion() {
     const [questionIdx, setQuestionIdx] = useState(0)
-    const [questionsCorrect, setQuestionsCorrect] = useState(0)
-    const [questionsWrong, setQuestionsWrong] = useState(0)
-
+    const [questionsCorrect, setQuestionsCorrect] = useState([])
+    const [questionsWrong, setQuestionsWrong] = useState([])
     const questions = useLoaderData();
-    const [question, setCurrentQuestion] = useState(questions[questionIdx])
     const [selectedAnswerId, setSelectedAnswerId] = useState(-1)
     const [questionAnswered, setQuestionAnswered] = useState(false)
-    const [showSummary, setShowSummary] = useState(true)
-    const navigate = useNavigate();
-    const {language, mode, currentQuestion, numQuestions} = useParams()
+    const [showSummary, setShowSummary] = useState(false)
+    const submit = useSubmit();
+    const {numQuestions} = useParams()
 
     function checkAnswer(answer) {
         if (selectedAnswerId === -1) {
             setQuestionAnswered(true)
             setSelectedAnswerId(answer)
-            if (answer === question['answer']) {
-                setQuestionsCorrect(questionsCorrect + 1)
+            if (answer === questions[questionIdx]['answer']) {
+                setQuestionsCorrect([...questionsCorrect, questions[questionIdx]])
+
             }
             else {
-                setQuestionsWrong(questionsWrong + 1)
+                setQuestionsWrong([...questionsWrong, questions[questionIdx]])
             }
         }
     }
 
     function continueLearning() {
-        console.log(language, mode, currentQuestion, numQuestions)
-        navigate(`/practice/${language}/${mode}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`)
         setShowSummary(false)
         setQuestionAnswered(false)
         setSelectedAnswerId(-1)
+        setQuestionIdx(0)
+        setQuestionsCorrect([])
+        setQuestionsWrong([])
+        submit(null, {method: "post"})
+        // redirect(`/practice/${language}/${mode}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`)
     }
     async function submitAnswer() {
         // let formData = new FormData();
@@ -71,18 +71,16 @@ export default function MultipleChoiceQuestion() {
         // formData.append("id", "mbo2")
         // submit(formData, {method: "post"})
         setShowSummary(true)
-        // navigate("/summary", {
-        //     state: { ...params }
-        // })
+
     }
     function nextQuestion() {
         if (questionIdx + 1 === questions.length){
             setShowSummary(true)
         }
         else {
-            setQuestionIdx(questionIdx + 1)
-            setCurrentQuestion(questions[questionIdx])
+            // setCurrentQuestion(questions[questionIdx + 1])
             console.log(questionIdx)
+            setQuestionIdx(questionIdx + 1)
             setSelectedAnswerId(-1)
             setQuestionAnswered(false)
         }
@@ -96,23 +94,23 @@ export default function MultipleChoiceQuestion() {
                 : <Container id="question-container">
                     <Row>
                         <Col className={"d-flex justify-content-center m-5"}>
-                            {questionAnswered? <h1 >{question.sentence}</h1>: <h1 >{question.sentence.replace(question.choices[question['answer']], '_'.repeat(question.choices[question['answer']].length))}</h1>}
+                            {questionAnswered? <h1 >{questions[questionIdx].sentence}</h1>: <h1 >{questions[questionIdx].sentence.replace(questions[questionIdx].choices[questions[questionIdx]['answer']], '_'.repeat(questions[questionIdx].choices[questions[questionIdx]['answer']].length))}</h1>}
                         </Col>
                     </Row>
                     <Row className={"d-flex justify-content-center"}>
                         <Col lg={8} md={10} s={10} xs={12}>
                             <div className="d-grid gap-3">
-                                <Button disabled={questionAnswered && selectedAnswerId !== 0 && question['answer'] !== 0} color={questionAnswered && question['answer'] === 0? "success": questionAnswered && question['answer'] !== 0 ? "error" : "common"} variant="contained" size="lg" onClick={(e)=> checkAnswer(0)}>
-                                    {question.choices[0]}
+                                <Button disabled={questionAnswered && selectedAnswerId !== 0 && questions[questionIdx]['answer'] !== 0} color={questionAnswered && questions[questionIdx]['answer'] === 0? "success": questionAnswered && questions[questionIdx]['answer'] !== 0 ? "error" : "common"} variant="contained" size="lg" onClick={(e)=> checkAnswer(0)}>
+                                    {questions[questionIdx].choices[0]}
                                 </Button>
-                                <Button disabled={questionAnswered && selectedAnswerId !== 1 && question['answer'] !== 1} color={questionAnswered && question['answer'] === 1? "success": questionAnswered && question['answer'] !== 1 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(1)}>
-                                    {question.choices[1]}
+                                <Button disabled={questionAnswered && selectedAnswerId !== 1 && questions[questionIdx]['answer'] !== 1} color={questionAnswered && questions[questionIdx]['answer'] === 1? "success": questionAnswered && questions[questionIdx]['answer'] !== 1 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(1)}>
+                                    {questions[questionIdx].choices[1]}
                                 </Button>
-                                <Button disabled={questionAnswered && selectedAnswerId !== 2 && question['answer'] !== 2} color={questionAnswered && question['answer'] === 2? "success": questionAnswered && question['answer'] !== 2 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(2)}>
-                                    {question.choices[2]}
+                                <Button disabled={questionAnswered && selectedAnswerId !== 2 && questions[questionIdx]['answer'] !== 2} color={questionAnswered && questions[questionIdx]['answer'] === 2? "success": questionAnswered && questions[questionIdx]['answer'] !== 2 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(2)}>
+                                    {questions[questionIdx].choices[2]}
                                 </Button>
-                                <Button disabled={questionAnswered && selectedAnswerId !== 3 && question['answer'] !== 3} color={questionAnswered && question['answer'] === 3? "success": questionAnswered && question['answer'] !== 3 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(3)}>
-                                    {question.choices[3]}
+                                <Button disabled={questionAnswered && selectedAnswerId !== 3 && questions[questionIdx]['answer'] !== 3} color={questionAnswered && questions[questionIdx]['answer'] === 3? "success": questionAnswered && questions[questionIdx]['answer'] !== 3 ? "error" : "common"} variant="contained" size="lg" onClick={()=> checkAnswer(3)}>
+                                    {questions[questionIdx].choices[3]}
                                 </Button>
                             </div>
                         </Col>

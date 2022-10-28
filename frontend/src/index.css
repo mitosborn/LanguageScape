@@ -394,3 +394,16 @@ i {
   margin-top: 15vh;
 }
 
+#main-navbar {
+  background-color: cadetblue;
+  color: white;
+}
+
+#practice-navbar {
+  /*border: groove black;*/
+  margin-top: 2px;
+  background-color: gray;
+  color: white;
+}
+
+

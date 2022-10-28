@@ -8,19 +8,23 @@ import {Button, Col, FormControl, FormGroup, Row} from "react-bootstrap";
 export default function Home() {
     return (
         <Container className={"p-0"} fluid={true}>
-            <Row>
+
+            <Row id={"main-navbar"}>
                 <Col>
-                    <Navbar bg="primary" variant="dark">
-                        <Container fluid={true}>
-                            <Navbar.Brand href="#home">LingScape</Navbar.Brand>
-                            <Navbar.Toggle />
-                            <Navbar.Collapse className="justify-content-end">
+                    <Container className={"my-2"}>
+                        <Row>
+                            <Col className={"d-flex justify-content-center"}>
+                            </Col>
+                            <Col className={"d-flex justify-content-center"}>
+                                <h1>LangScape</h1>
+                            </Col>
+                            <Col className={"d-flex justify-content-center"}>
                                 <Navbar.Text>
                                     Signed in as: <a href="#login">Mark Otto</a>
                                 </Navbar.Text>
-                            </Navbar.Collapse>
-                        </Container>
-                    </Navbar>
+                            </Col>
+                        </Row>
+                    </Container>
                 </Col>
             </Row>
             <Row>
@@ -31,3 +35,18 @@ export default function Home() {
         </Container>
     );
 }
+// {/*<Row>*/}
+// {/*    <Col>*/}
+// //         <Navbar bg="primary" variant="dark">
+// //             <Container fluid={true}>
+// {/*                <Navbar.Brand href="#home">LingScape</Navbar.Brand>*/}
+// {/*                <Navbar.Toggle />*/}
+// {/*                <Navbar.Collapse className="justify-content-end">*/}
+// {/*                    <Navbar.Text>*/}
+// {/*                        Signed in as: <a href="#login">Mark Otto</a>*/}
+// {/*                    </Navbar.Text>*/}
+// {/*                </Navbar.Collapse>*/}
+// {/*            </Container>*/}
+// {/*        </Navbar>*/}
+// {/*    </Col>*/}
+// {/*</Row>*/}
