@@ -11,13 +11,13 @@ export default function PracticeNavBar({questionsCorrect, questionsWrong, numQue
                 <Container className={"my-2"}>
                     <Row>
                         <Col className={"d-flex justify-content-center"}>
-                            <h5>Correct: {questionsCorrect.length}</h5>
+                            <h4>Correct: {questionsCorrect.length}</h4>
                         </Col>
                         <Col className={"d-flex justify-content-center"}>
-                            <h5>Incorrect: {questionsWrong.length}</h5>
+                            <h4>Incorrect: {questionsWrong.length}</h4>
                         </Col>
                         <Col className={"d-flex justify-content-center"}>
-                            <h5>Questions Left: {numQuestions - (questionsCorrect.length + questionsWrong.length)}</h5>
+                            <h4>Questions Left: {numQuestions - (questionsCorrect.length + questionsWrong.length)}</h4>
                         </Col>
                     </Row>
                 </Container>
