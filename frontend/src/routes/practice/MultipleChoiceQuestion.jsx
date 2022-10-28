@@ -90,7 +90,7 @@ export default function MultipleChoiceQuestion() {
         <>
             <PracticeNavBar questionsCorrect={questionsCorrect} questionsWrong={questionsWrong} numQuestions={numQuestions}/>
             {showSummary ?
-               <SessionSummary continueLearning={() => continueLearning()} />
+               <SessionSummary questionsCorrect={questionsCorrect} questionsWrong={questionsWrong} continueLearning={() => continueLearning()} />
                 : <Container id="question-container">
                     <Row>
                         <Col className={"d-flex justify-content-center m-5"}>

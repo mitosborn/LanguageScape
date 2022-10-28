@@ -16,7 +16,9 @@ export default function Home() {
                             <Col className={"d-flex justify-content-center"}>
                             </Col>
                             <Col className={"d-flex justify-content-center"}>
-                                <h1>LangScape</h1>
+                                <Link to={"/"} style={{ color: 'inherit', textDecoration: 'inherit'}}>
+                                    <h1>LangScape</h1>
+                                </Link>
                             </Col>
                             <Col className={"d-flex justify-content-center"}>
                                 <Navbar.Text>
