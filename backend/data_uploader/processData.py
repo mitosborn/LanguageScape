@@ -1,13 +1,15 @@
 ## MapReduce
 ## Pandas groupBy
 ## Spark groupBy
+from pyspark.shell import sc
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, collect_list, array_contains
 from pyspark.sql.types import StructField, IntegerType, StructType, StringType
 import uuid
 from pyspark.sql.functions import udf, lit
+import boto3
 spark = SparkSession.builder.getOrCreate()
-
+sc.setLogLevel("WARN")
 schema = StructType([
     StructField("translation_index_1", IntegerType(), True),
     StructField("original_text", StringType(), True),
@@ -24,7 +26,7 @@ groupedBy = groupedBy.withColumns({"id": uuidUdf(), "language": lit("deu-eng")})
 # groupedBy = groupedBy.withColumn("language", lit("deu-eng"))
 groupedBy.printSchema()
 groupedBy.filter(groupedBy.original_text == "Was ist das?").show(truncate=False)
-groupedBy.toPandas().to_json("./groupedByTranslations", orient='records')
+groupedBy.toPandas().to_json("./groupedByTranslations.json", orient='records')
 # groupedBy.filter(array_contains("collect_list(translated_text)", "What is that?")).show(truncate=False)
 # df.printSchema()
 # df.show()
