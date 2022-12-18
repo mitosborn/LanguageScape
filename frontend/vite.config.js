@@ -9,6 +9,7 @@ export default defineConfig({
     outDir: '../../backend/static',
     emptyOutDir: true
   },
+  server: {port: 3000},
   plugins: [react()]
 })
 

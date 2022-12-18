@@ -1,8 +1,9 @@
-import mimetypes
+from flask import Flask, after_this_request, jsonify, request
+from os import environ
+from requests import get
 
-mimetypes.add_type('application/javascript', '.js')
-mimetypes.add_type('text/css', '.css')
-from flask import Flask, after_this_request, jsonify
+IS_DEV = environ["FLASK_ENV"] == "development"
+WEBPACK_DEV_SERVER_HOST = "http://localhost:3000"
 
 app = Flask(__name__)
 
@@ -19,6 +20,22 @@ questions = [{
         "answer": 1,
         "choices": ["besser", "stärker", "schwacher", "großer"]
     }]
+
+
+def proxy(host, path):
+    response = get(f"{host}{path}")
+    excluded_headers = [
+        "content-encoding",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+    ]
+    headers = {
+        name: value
+        for name, value in response.raw.headers.items()
+        if name.lower() not in excluded_headers
+    }
+    return response.content, response.status_code, headers
 
 
 # @app.route("/")
@@ -40,6 +57,8 @@ def get_question():
 @app.route("/<path:path>")
 def get_app(path):
     print(path)
+    if IS_DEV:
+        return proxy(WEBPACK_DEV_SERVER_HOST, request.path)
     if 'assets' in path:
         return app.send_static_file('assets/' + path.split('/')[-1])
     return app.send_static_file(path)
