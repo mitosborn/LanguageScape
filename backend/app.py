@@ -1,3 +1,7 @@
+import mimetypes
+
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 from flask import Flask, after_this_request, jsonify
 
 app = Flask(__name__)
@@ -17,9 +21,9 @@ questions = [{
     }]
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+# @app.route("/")
+# def hello_world():
+#     return "<p>Hello test, World!</p>"
 
 
 @app.route("/question")
@@ -30,3 +34,17 @@ def get_question():
         return response
 
     return jsonify(questions)
+
+
+@app.route("/", defaults={"path": "index.html"})
+@app.route("/<path:path>")
+def get_app(path):
+    print(path)
+    if 'assets' in path:
+        return app.send_static_file('assets/' + path.split('/')[-1])
+    return app.send_static_file(path)
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
