@@ -1,8 +1,8 @@
-from backend.model.Table import Table
+from model.Table import Table
 import boto3
 
 
-class QuestionRepository:
+class UserRepository:
     user_table: Table = None
 
     def __init__(self, ddb_resource: boto3.resource):
