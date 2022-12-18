@@ -56,7 +56,6 @@ def get_question():
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
 def get_app(path):
-    print(path)
     if IS_DEV:
         return proxy(WEBPACK_DEV_SERVER_HOST, request.path)
     if 'assets' in path:
