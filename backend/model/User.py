@@ -1,16 +1,21 @@
-class User:
-    username: str
-    email_address: str
-    languages: set
-    learn_sets: set
+from pynamodb.models import Model
+from pynamodb.attributes import (
+    UTCDateTimeAttribute, UnicodeAttribute, MapAttribute, UnicodeSetAttribute
+)
 
-    def __init__(self, username: str, email_address: str, languages: set, learn_sets: set):
-        self.username = username
-        self.email_address = email_address
-        self.languages = languages
-        self.learn_sets = learn_sets
 
-    @staticmethod
-    def from_dict(user_dict: dict):
-        return User(username=user_dict['username'], email_address=user_dict['email_address'],
-                    languages=set(user_dict['languages']), learn_sets=set(user_dict['learn_sets']))
+class User(Model):
+    class Meta:
+        table_name = 'users'
+        region = 'us-east-1'
+        write_capacity_units = 10
+        read_capacity_units = 10
+
+    username = UnicodeAttribute(hash_key=True)
+    email = UnicodeAttribute(null=False)
+    learn_sets = MapAttribute(null=True)  # {Language: [learn_set_id]}
+    account_created = UTCDateTimeAttribute(null=False)
+    preferred_language = UnicodeAttribute(null=False)
+    languages_spoken = UnicodeSetAttribute(null=False)
+    languages_learning = UnicodeSetAttribute(null=True)
+    profile_img_url = UnicodeAttribute(null=True)
