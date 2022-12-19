@@ -7,7 +7,7 @@ from pyspark.sql.functions import col, collect_list, array_contains
 from pyspark.sql.types import StructField, IntegerType, StructType, StringType
 import uuid
 from pyspark.sql.functions import udf, lit
-import boto3
+import pandas
 spark = SparkSession.builder.getOrCreate()
 sc.setLogLevel("WARN")
 schema = StructType([
