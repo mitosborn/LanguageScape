@@ -55,17 +55,4 @@ def delete_user():
     if 'username' not in request.args:
         raise MissingParameterException(action='DeleteUser', param='username')
     username = request.args.get('username')
-
-    try:
-        User.get(hash_key=username).delete()
-        return jsonify(isError=False,
-                       message=f'User {username} deleted successfully',
-                       statusCode=200), 200
-    except DeleteError:
-        return jsonify(isError=True,
-                       message="Error: Error deleting user",
-                       statusCode=404), 404
-    except User.DoesNotExist:
-        return jsonify(isError=True,
-                       message="DeleteUser Error: User does not exist",
-                       statusCode=404), 404
+    return User.delete_item_json_response(username)
