@@ -1,10 +1,11 @@
-from pynamodb.models import Model
 from pynamodb.attributes import (
-    UTCDateTimeAttribute, UnicodeAttribute, MapAttribute, UnicodeSetAttribute, NumberAttribute
+    UnicodeAttribute, UnicodeSetAttribute, NumberAttribute
 )
 
+from model.LangModel import LangModel
 
-class Translation(Model):
+
+class Translation(LangModel):
     class Meta:
         table_name = 'translations'
         region = 'us-east-1'

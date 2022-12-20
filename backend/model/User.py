@@ -1,10 +1,11 @@
-from pynamodb.models import Model
 from pynamodb.attributes import (
     UTCDateTimeAttribute, UnicodeAttribute, MapAttribute, UnicodeSetAttribute
 )
 
+from model.LangModel import LangModel
 
-class User(Model):
+
+class User(LangModel):
     class Meta:
         table_name = 'users'
         region = 'us-east-1'
@@ -19,3 +20,4 @@ class User(Model):
     languages_spoken = UnicodeSetAttribute(null=False)
     languages_learning = UnicodeSetAttribute(null=True)
     profile_img_url = UnicodeAttribute(null=True)
+

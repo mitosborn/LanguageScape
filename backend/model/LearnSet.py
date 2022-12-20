@@ -1,10 +1,10 @@
 from pynamodb.attributes import (
     UnicodeAttribute, NumberAttribute
 )
-from pynamodb.models import Model
+from model.LangModel import LangModel
 
 
-class LearnSet(Model):
+class LearnSet(LangModel):
     class Meta:
         table_name = 'learn_sets'
         region = 'us-east-1'
