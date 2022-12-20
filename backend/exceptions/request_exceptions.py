@@ -25,3 +25,16 @@ class MalformedRequestException(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
+
+
+class EntityNotFoundException(Exception):
+    status_code = 404
+
+    def __init__(self, entity_name):
+        Exception.__init__(self)
+        self.message = f'{entity_name} does not exist'
+
+    def to_dict(self):
+        rv = dict()
+        rv['message'] = self.message
+        return rv

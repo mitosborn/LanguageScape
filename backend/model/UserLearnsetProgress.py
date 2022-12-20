@@ -14,8 +14,8 @@ class UserLearnsetProgress(LangModel):
 
     learnset_name = UnicodeAttribute(hash_key=True)
     username = UnicodeAttribute(range_key=True)
-    untried_questions = NumberSetAttribute()
-    attempted_questions = NumberSetAttribute()
-    mastered_questions = NumberSetAttribute()
-    number_questions = NumberAttribute()
+    untried_translations = NumberSetAttribute()
+    attempted_translations = NumberSetAttribute()
+    mastered_translations = NumberSetAttribute()
+    number_translations = NumberAttribute()
     last_attempted = UTCDateTimeAttribute(null=True)

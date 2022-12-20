@@ -4,7 +4,7 @@ from pynamodb.attributes import (
 from model.LangModel import LangModel
 
 
-class LearnSet(LangModel):
+class Learnset(LangModel):
     class Meta:
         table_name = 'learn_sets'
         region = 'us-east-1'

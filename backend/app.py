@@ -4,7 +4,7 @@ from flask import Flask, after_this_request, jsonify, request
 from os import environ
 from requests import get
 
-from exceptions.request_exceptions import MalformedRequestException, MissingParameterException
+from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
 from model.User import User
 from pynamodb.exceptions import (DeleteError)
 
@@ -85,6 +85,13 @@ def handle_malformed_request_exception(error):
 
 
 @app.errorhandler(MissingParameterException)
+def handle_malformed_request_exception(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+@app.errorhandler(EntityNotFoundException)
 def handle_malformed_request_exception(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code

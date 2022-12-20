@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from flask import Blueprint, jsonify, request
-from pynamodb.exceptions import DeleteError, PutError
 
 from exceptions.request_exceptions import MissingParameterException, MalformedRequestException
 from model.User import User

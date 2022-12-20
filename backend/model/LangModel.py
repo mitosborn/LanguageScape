@@ -2,6 +2,8 @@ from flask import jsonify
 from pynamodb.exceptions import DeleteError, PutError
 from pynamodb.models import Model
 
+from exceptions.request_exceptions import EntityNotFoundException
+
 
 class LangModel(Model):
 
@@ -13,6 +15,13 @@ class LangModel(Model):
 
         except cls.DoesNotExist:
             return None
+
+    @classmethod
+    def get_item(cls, *args):
+        entity = cls.safe_get(*args)
+        if entity:
+            return entity
+        raise EntityNotFoundException(cls.__name__)
 
     @classmethod
     def get_item_json_response(cls, *args):
