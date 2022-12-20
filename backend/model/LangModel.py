@@ -1,5 +1,5 @@
 from flask import jsonify
-from pynamodb.exceptions import DeleteError
+from pynamodb.exceptions import DeleteError, PutError
 from pynamodb.models import Model
 
 
@@ -55,3 +55,20 @@ class LangModel(Model):
                            message=f"Error deleting {cls.__name__}",
                            statusCode=404), 404
 
+    def safe_save(self, condition=None):
+        try:
+            self.save(condition)
+            return True
+        except PutError:
+            return False
+
+    def save_item_json_response(self, condition=None):
+        if self.safe_save(condition):
+            return jsonify(isError=False,
+                           message="Success",
+                           statusCode=200,
+                           data=self.to_json()), 200
+        else:
+            return jsonify(isError=True,
+                           message=f"Error saving {self.__class__.__name__}: {self.to_json()}",
+                           statusCode=400), 400

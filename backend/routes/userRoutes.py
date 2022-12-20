@@ -33,21 +33,13 @@ def create_user():
                        message="Error: User already exists",
                        statusCode=400,
                        data=user.to_json()), 400
-    try:
+    else:
         new_user = User(json['username'],
                         email=json['email'],
                         preferred_language=json['preferred_language'],
                         languages_spoken={json['preferred_language']},
                         account_created=datetime.utcnow())
-        new_user.save()
-        return jsonify(isError=False,
-                       message="Success",
-                       statusCode=200,
-                       data=new_user.to_json()), 200
-    except PutError:
-        return jsonify(isError=True,
-                       message="Error creating user",
-                       statusCode=400), 400
+        return new_user.save_item_json_response()
 
 
 @user_routes.route("", methods=["DELETE"])
