@@ -8,6 +8,7 @@ from exceptions.request_exceptions import MalformedRequestException, MissingPara
 from model.User import User
 from pynamodb.exceptions import (DeleteError)
 
+from routes.translationRoutes import translation_routes
 from routes.userRoutes import user_routes
 
 IS_DEV = environ["FLASK_ENV"] == "development"
@@ -15,6 +16,7 @@ WEBPACK_DEV_SERVER_HOST = "http://localhost:3000"
 
 app = Flask(__name__)
 app.register_blueprint(user_routes, url_prefix='/user')
+app.register_blueprint(translation_routes, url_prefix='/translation')
 
 questionNumber = 0
 questions = [{

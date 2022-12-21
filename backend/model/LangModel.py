@@ -10,6 +10,7 @@ class LangModel(Model):
     @classmethod
     def safe_get(cls, *args):
         try:
+            print(args)
             entity = cls.get(*args)
             return entity
 

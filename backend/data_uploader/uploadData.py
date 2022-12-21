@@ -2,7 +2,7 @@ import json
 
 from flask import jsonify
 
-from model.LearnSet import Learnset
+from model.Learnset import Learnset
 from model.Translation import Translation
 from model.UserLearnsetProgress import UserLearnsetProgress
 from model.UserTranslationProgress import UserTranslationProgress
@@ -15,10 +15,10 @@ if not Translation.exists():
     Translation.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 if not Learnset.exists():
     Learnset.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
-# if not UserTranslationProgress.exists():
-#     UserTranslationProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
-# if not UserLearnsetProgress.exists():
-#     UserLearnsetProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
+if not UserTranslationProgress.exists():
+    UserTranslationProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
+if not UserLearnsetProgress.exists():
+    UserLearnsetProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 
 
 # new_learn_set = LearnSet(learn_set_name=LEARN_SET_NAME, original_text_language=ORIGINAL_TEXT_LANGUAGE,
@@ -37,6 +37,6 @@ if not Learnset.exists():
 #
 #         for item in items:
 #             batch.save(item)
-
-print(Learnset.get_item(LEARN_SET_NAME))
-print(Learnset.get_item_json_response(LEARN_SET_NAME, item_name='LearnSet'))
+#
+# print(Learnset.get_item(LEARN_SET_NAME))
+# print(Learnset.get_item_json_response(LEARN_SET_NAME, item_name='LearnSet'))
