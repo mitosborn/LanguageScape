@@ -18,16 +18,16 @@ def get_translation_set():
             raise MissingParameterException(action='GetQuestion', param=param)
 
     username = request.args.get('username')
-    learnset = request.args.get('learnset')
+    requested_learnset = request.args.get('learnset')
     User.get_item(username)
     requested_num_translations = int(request.args.get('num_translations'))
     print(username)
-    user_learnset_progress = UserLearnsetProgress.safe_get(learnset, username)
+    user_learnset_progress = UserLearnsetProgress.safe_get(requested_learnset, username)
     if not user_learnset_progress:
         print("here")
-        learnset = Learnset.get_item(learnset)
+        learnset = Learnset.get_item(requested_learnset)
         learnset_num_translations = learnset.number_translations
-        user_learnset_progress = UserLearnsetProgress(learnset,
+        user_learnset_progress = UserLearnsetProgress(requested_learnset,
                                                       username,
                                                       untried_translations=set(range(learnset_num_translations)),
                                                       attempted_translations=set(), mastered_translations=set(),
@@ -36,14 +36,17 @@ def get_translation_set():
         user_learnset_progress.safe_save()
 
     untried_translations_available = len(user_learnset_progress.untried_translations)
-    attempted_translations_available = len(user_learnset_progress.attempted_translations)
+    # if user_learnset_progress.attempted_translations:
+    #     attempted_translations_available = len(user_learnset_progress.attempted_translations)
+    # else:
+    #     attempted_translations_available = 0
     print(requested_num_translations, untried_translations_available)
     if requested_num_translations < untried_translations_available:
         question_set = list(user_learnset_progress.untried_translations)[:requested_num_translations]
         untried_translations_available = list(user_learnset_progress.untried_translations)[requested_num_translations:]
-        return Translation.safe_get(learnset, Translation.translation_id.between(int(question_set[0]), int(question_set[-1])))
+        response = Translation.query(requested_learnset,
+                                 Translation.translation_id.between(float(question_set[0]), float(
+                                     question_set[-1])))
 
-
-
-
+        return [translation.to_json() for translation in response]
 
