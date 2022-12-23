@@ -19,3 +19,5 @@ class Translation(LangModel):
     original_text = UnicodeAttribute()
     translation = UnicodeSetAttribute()
     difficulty = UnicodeAttribute(null=True)
+    choices = UnicodeSetAttribute()
+    answer = NumberAttribute()
