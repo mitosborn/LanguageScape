@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, after_this_request, jsonify, request
 from os import environ
 from requests import get
-
+from flask_cors import CORS
 from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
 from model.User import User
 from pynamodb.exceptions import (DeleteError)
@@ -15,6 +15,7 @@ IS_DEV = environ["FLASK_ENV"] == "development"
 WEBPACK_DEV_SERVER_HOST = "http://localhost:3000"
 
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(user_routes, url_prefix='/user')
 app.register_blueprint(translation_routes, url_prefix='/translation')
 
@@ -56,11 +57,6 @@ def proxy(host, path):
 
 @app.route("/question")
 def get_question():
-    @after_this_request
-    def add_header(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
-
     return jsonify(questions)
 
 
