@@ -1,5 +1,5 @@
 from pynamodb.attributes import (
-    UnicodeAttribute, UnicodeSetAttribute, NumberAttribute
+    UnicodeAttribute, UnicodeSetAttribute, NumberAttribute, ListAttribute
 )
 
 from model.LangModel import LangModel
@@ -19,5 +19,5 @@ class Translation(LangModel):
     original_text = UnicodeAttribute()
     translation = UnicodeSetAttribute()
     difficulty = UnicodeAttribute(null=True)
-    choices = UnicodeSetAttribute()
+    choices = ListAttribute()
     answer = NumberAttribute()
