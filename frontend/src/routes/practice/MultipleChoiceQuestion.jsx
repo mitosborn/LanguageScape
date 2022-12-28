@@ -13,7 +13,7 @@ import PracticeNavBar from "./PracticeNavBar.jsx";
 import {updateContact} from "../../contacts.js";
 // TODO: Get all questions in one batch and iterate through them/use setQuestion()
 export async function loader({ params }) {
-    const questions = await getQuestions(params.numQuestions);
+    const questions = await getQuestions(params);
     console.log("invoked loader")
     if (!questions) {
         throw new Response("", {
@@ -94,7 +94,7 @@ export default function MultipleChoiceQuestion() {
                 : <Container id="question-container">
                     <Row>
                         <Col className={"d-flex justify-content-center m-5"}>
-                            {questionAnswered? <h1 >{questions[questionIdx].sentence}</h1>: <h1 >{questions[questionIdx].sentence.replace(questions[questionIdx].choices[questions[questionIdx]['answer']], '_'.repeat(questions[questionIdx].choices[questions[questionIdx]['answer']].length))}</h1>}
+                            {questionAnswered? <h1 >{questions[questionIdx].original_text}</h1>: <h1 >{questions[questionIdx].original_text.replace(questions[questionIdx].choices[questions[questionIdx]['answer']], '_'.repeat(questions[questionIdx].choices[questions[questionIdx]['answer']].length))}</h1>}
                         </Col>
                     </Row>
                     <Row className={"d-flex justify-content-center"}>

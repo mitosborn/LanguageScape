@@ -9,7 +9,14 @@ export async function getQuestions(query) {
     // if (query) {
     //     contacts = matchSorter(contacts, query, { keys: ["first", "last"] });
     // }
-    let questions = await (await fetch("http://127.0.0.1:5000/question")).json()
+    console.log("before")
+    console.log(query)
+    let searchParams = new URLSearchParams()
+    searchParams.append("username", "liebe")
+    searchParams.append("learnset", query.language)
+    searchParams.append("num_translations", query.numQuestions)
+    console.log(searchParams.toString())
+    let questions = await (await fetch(`http://127.0.0.1:5000/translation?${searchParams.toString()}`)).json()
     console.log(questions)
     return questions;
 }

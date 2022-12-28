@@ -132,6 +132,6 @@ print(question_num, len(total_translations))
 #         print(item.choices, item.answer, item.choices[item.answer], item.original_text)
 #         exit(-1)
 
-with Translation.batch_write() as batch:
-    for item in total_translations:
-        batch.save(item)
+# with Translation.batch_write() as batch:
+#     for item in total_translations:
+#         batch.save(item)
