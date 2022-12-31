@@ -1,10 +1,11 @@
 
 export default function SummaryQuestion({question}) {
     const {original_text, choices, answer} = question
-    let answerStart = original_text.indexOf(choices[answer])
+    let sentence = original_text.replaceAll("\"","")
+    let answerStart = sentence.indexOf(choices[answer])
     let answerEnd = answerStart + choices[answer].length
-    let beforeAnswer = original_text.substring(0, answerStart)
-    let afterAnswer = original_text.substring(answerEnd)
+    let beforeAnswer = sentence.substring(0, answerStart)
+    let afterAnswer = sentence.substring(answerEnd)
 
     return (
         <div className={"d-flex gap-2"}>

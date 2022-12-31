@@ -18,6 +18,7 @@ export async function getQuestions(query) {
     console.log(searchParams.toString())
     let questions = await (await fetch(`http://127.0.0.1:5000/translation?${searchParams.toString()}`)).json()
     console.log(questions)
+    questions = questions.map((question) => ({...question, original_text : question['original_text'].replaceAll("\" \"","\"\n\"")}))
     return questions;
 }
 
