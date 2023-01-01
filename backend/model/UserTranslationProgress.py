@@ -16,6 +16,4 @@ class UserTranslationProgress(LangModel):
     translation_id = NumberAttribute(range_key=True)
     number_attempts = NumberAttribute()
     number_correct = NumberAttribute()
-    total_points = NumberAttribute()
-    current_score = NumberAttribute()
     last_attempted = UTCDateTimeAttribute(null=True)

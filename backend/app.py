@@ -6,7 +6,7 @@ from requests import get
 from flask_cors import CORS
 from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
 from model.User import User
-from pynamodb.exceptions import (DeleteError)
+from pynamodb.exceptions import (DeleteError, PutError)
 
 from routes.translationRoutes import translation_routes
 from routes.userRoutes import user_routes
@@ -94,3 +94,9 @@ def handle_malformed_request_exception(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
+
+
+@app.errorhandler(Exception)
+def all_exception_handler(error):
+    return "Error: " + error.code
+
