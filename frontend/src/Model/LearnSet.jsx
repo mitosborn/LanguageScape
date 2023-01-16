@@ -1,4 +1,4 @@
-import {Outlet, useLoaderData, useNavigation, useSubmit} from "react-router-dom";
+import {Link, Outlet, useLoaderData, useNavigation, useSubmit} from "react-router-dom";
 import styled from 'styled-components'
 import {Button, Col, Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
@@ -74,7 +74,7 @@ export default function LearnSet({learnSet}) {
                 </Col>
             {/*</Row>*/}
             {/*<Row>*/}
-                <Col xs={12} sm={12} md={12} lg={2} xl={2} xxl={2} as={Button} className={"btn btn-success btn-lg btn-block joystix visible-xs"} style={{marginTop: "15px"}}>
+                <Col xs={12} sm={12} md={12} lg={2} xl={2} xxl={2} as={Link} to="/mc/20%20German%20Sentences/lsid/50/10" className={"btn btn-success btn-lg btn-block joystix visible-xs"} style={{marginTop: "20px"}}>
                     <strong>
                         <FontAwesomeIcon icon="fa-solid fa-play" /> Play
                     </strong>

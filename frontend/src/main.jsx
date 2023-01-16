@@ -30,56 +30,18 @@ const router = createBrowserRouter([
             [
                 { index: true, element: <SelectSpokenLang/> },
                 {
-                    path: "/contacts",
-                    element: <ContactRoot/>,
-                    errorElement: <ErrorPage/>,
-                    loader: rootLoader,
-                    action: rootAction,
-                    children: [
-                    {
-                        path: ":contactId",
-                        element: <Contact/>,
-                        loader: contactLoader,
-                        action: contactAction
-                    },
-                    {
-                        path: ":contactId/edit",
-                        element: <EditContact/>,
-                        loader: contactLoader,
-                        action: editAction,
-                    },
-                    {
-                        path: ":contactId/destroy",
-                        action: destroyAction,
-                        errorElement: <div>Oops! There was an error.</div>
-                    }
-                ]
-                },
-                {
-                    path: "/practice/",
+                    path: "/practice/:language",
                     element: <PracticeRoot/>,
                     errorElement: <ErrorPage/>,
                     loader: practiceLoader,
                     action: practiceAction,
-                    children: [
-                        {
-                            path: "mc/:language/:currentQuestion/:numQuestions",
-                            element: <MultipleChoiceQuestion/>,
-                            loader: multipleChoiceLoader,
-                            action: multipleChoiceAction
-                        },
-                        // {
-                        //     path: "submit",
-                        //     action: submitAction,
-                        //     errorElement: <div>Oops! There was an error.</div>
-                        // },
-
-                        // {
-                        //     path: "incorrect/:questionId",
-                        //     action: incorrectAction,
-                        //     errorElement: <div>Oops! There was an error.</div>
-                        // }
-                    ]
+                    children: []
+                },
+                {
+                    path: "mc/:language/:learnSetId/:currentQuestion/:numQuestions",
+                    element: <MultipleChoiceQuestion/>,
+                    loader: multipleChoiceLoader,
+                    action: multipleChoiceAction
                 },
                 {
                     path: "/summary",

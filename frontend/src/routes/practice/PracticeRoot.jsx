@@ -37,14 +37,13 @@ export default function PracticeRoot() {
     const { contacts, q } = useLoaderData();
     const navigation = useNavigation();
     const submit = useSubmit();
+    const learnSets = useLoaderData();
 
     const searching =
         navigation.location &&
         new URLSearchParams(navigation.location.search).has(
             "q"
         );
-
-    const choices = [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}]
     // useEffect(() => {
     //     document.getElementById("q").value = q;
     // }, [q]);
@@ -57,7 +56,7 @@ export default function PracticeRoot() {
             </LearnTitleRow>
             <Row>
                 <LearnSetContainer as={Container} fluid={true}>
-                    {choices.map(value => <LearnSetRow as={"Row"}><LearnSet learnSet={value}></LearnSet></LearnSetRow>)}
+                    {learnSets.map(value => <LearnSetRow as={"Row"}><LearnSet learnSet={value}></LearnSet></LearnSetRow>)}
                 </LearnSetContainer>
             </Row>
         </Container>
@@ -65,10 +64,11 @@ export default function PracticeRoot() {
 }
 
 
-export async function loader({ request }) {
+export async function loader({request, params}) {
+    console.log(params)
     // const url = new URL(request.url);
     // const q = url.searchParams.get("q");
     // const contacts = await getContacts(q);
     // return { contacts, q };
-    return 'null'
+    return [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}]
 }

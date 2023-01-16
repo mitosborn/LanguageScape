@@ -25,8 +25,8 @@ export async function loader({ params }) {
 }
 
 export async function action({ request, params }) {
-    const {language, mode, currentQuestion, numQuestions} = params
-    return redirect(`/practice/${language}/${mode}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`);
+    const {language, learnSetId, currentQuestion, numQuestions} = params
+    return redirect(`/mc/${language}/${learnSetId}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`);
 }
 
 // Send data back to backend -> backend returns session ID w/ summary of num right/wrong, etc
