@@ -4,11 +4,18 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Link, Outlet} from "react-router-dom";
 import {Button, Col, FormControl, FormGroup, Row} from "react-bootstrap";
+import {
+    MDBContainer,
+    MDBCollapse,
+    MDBNavbar,
+    MDBNavbarToggler,
+    MDBIcon,
+    MDBBtn,
+} from 'mdb-react-ui-kit';
 
-export default function Home() {
+export default function NavBar() {
     return (
         <Container className={"p-0"} fluid={true}>
-
             <Row id={"main-navbar"}>
                 <Col>
                     <Container className={"my-2"}>
@@ -22,7 +29,7 @@ export default function Home() {
                             </Col>
                             <Col className={"d-flex justify-content-center"}>
                                 <Navbar.Text>
-                                    Signed in as: <a href="#login">Mark Otto</a>
+                                    Signed in as: <a href="src/routes/home/#login">Mark Otto</a>
                                 </Navbar.Text>
                             </Col>
                         </Row>

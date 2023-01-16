@@ -3,10 +3,12 @@ import { getContacts, createContact } from "../../contacts.js";
 import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
+import LearnSet from "../../Model/LearnSet.jsx";
 
 export async function action() {
     // const contact = await createContact();
     // return redirect(`/contacts/${contact.id}/edit`);
+    return null;
 }
 
 export default function PracticeRoot() {
@@ -20,13 +22,16 @@ export default function PracticeRoot() {
             "q"
         );
 
+    const choices = [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}]
     // useEffect(() => {
     //     document.getElementById("q").value = q;
     // }, [q]);
 
     return (
         <div>
-            <Outlet />
+            <h1>Practice page</h1>
+            <LearnSet learnSet={choices[0]}></LearnSet>
+            <Outlet/>
         </div>
     );
 }
@@ -37,4 +42,5 @@ export async function loader({ request }) {
     // const q = url.searchParams.get("q");
     // const contacts = await getContacts(q);
     // return { contacts, q };
+    return 'null'
 }

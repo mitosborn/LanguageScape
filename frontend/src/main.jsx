@@ -11,40 +11,40 @@ import ErrorPage from "./error-page.jsx";
 import Contact, {loader as contactLoader, action as contactAction} from "./routes/contact/contact.jsx";
 import EditContact, {action as editAction} from "./routes/contact/edit.jsx";
 import {action as destroyAction } from "./routes/contact/delete.jsx";
-import Index from "./routes/contact/index.jsx";
-import Home from "./routes/home.jsx";
+import SelectSpokenLang from "./routes/home/SelectSpokenLang.jsx";
+import NavBar from "./routes/home/NavBar.jsx";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import MultipleChoiceQuestion, { loader as multipleChoiceLoader, action as multipleChoiceAction} from "./routes/practice/MultipleChoiceQuestion.jsx";
 import Summary, {loader as summaryLoader} from "./routes/practice/Summary.jsx";
-import PracticeRoot from "./routes/practice/PracticeRoot.jsx";
+import PracticeRoot, {action as practiceAction, loader as practiceLoader} from "./routes/practice/PracticeRoot.jsx";
 import {action as submitAction} from "./routes/practice/submit.jsx"
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />,
-        errorElement: <ErrorPage />,
+        element: <NavBar/>,
+        errorElement: <ErrorPage/>,
         // loader: rootLoader,
         // action: rootAction,
         children:
             [
-                { index: true, element: <Index /> },
+                { index: true, element: <SelectSpokenLang/> },
                 {
                     path: "/contacts",
-                    element: <ContactRoot />,
-                    errorElement: <ErrorPage />,
+                    element: <ContactRoot/>,
+                    errorElement: <ErrorPage/>,
                     loader: rootLoader,
                     action: rootAction,
                     children: [
                     {
                         path: ":contactId",
-                        element: <Contact />,
+                        element: <Contact/>,
                         loader: contactLoader,
                         action: contactAction
                     },
                     {
                         path: ":contactId/edit",
-                        element: <EditContact />,
+                        element: <EditContact/>,
                         loader: contactLoader,
                         action: editAction,
                     },
@@ -56,15 +56,15 @@ const router = createBrowserRouter([
                 ]
                 },
                 {
-                    path: "/practice/:language",
-                    element: <PracticeRoot />,
-                    errorElement: <ErrorPage />,
-                    loader: rootLoader,
-                    action: rootAction,
+                    path: "/practice/",
+                    element: <PracticeRoot/>,
+                    errorElement: <ErrorPage/>,
+                    loader: practiceLoader,
+                    action: practiceAction,
                     children: [
                         {
-                            path: ":mode/:currentQuestion/:numQuestions",
-                            element: <MultipleChoiceQuestion />,
+                            path: "mc/:language/:currentQuestion/:numQuestions",
+                            element: <MultipleChoiceQuestion/>,
                             loader: multipleChoiceLoader,
                             action: multipleChoiceAction
                         },
