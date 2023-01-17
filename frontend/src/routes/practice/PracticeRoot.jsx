@@ -23,13 +23,17 @@ const LearnSetContainer = styled.div`
 
 const LearnTitleRow = styled.div`
     background-color: red;
-    padding-bottom: 10px;
+    padding: 5px 0;
     text-align: center;
 `
 
 const LearnSetRow = styled.div`
     background-color: aqua;
     padding-bottom: 20px;
+`
+
+const ChooseLearnsetContainer = styled.div`
+
 `
 
 
@@ -49,7 +53,7 @@ export default function PracticeRoot() {
     // }, [q]);
 
     return (
-        <Container style={{backgroundColor: "blue"}}>
+        <ChooseLearnsetContainer as={Container} fluid={true}>
             <LearnTitleRow as={Row}>
                 <Col as={"h1"}>Practice Sets</Col>
                 <Col as={"h2"}><FontAwesomeIcon icon="fa-solid fa-language" /> English -> German</Col>
@@ -59,7 +63,7 @@ export default function PracticeRoot() {
                     {learnSets.map(value => <LearnSetRow as={"Row"}><LearnSet learnSet={value}></LearnSet></LearnSetRow>)}
                 </LearnSetContainer>
             </Row>
-        </Container>
+        </ChooseLearnsetContainer>
     );
 }
 

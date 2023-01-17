@@ -49,6 +49,30 @@ const DescriptionRow = styled.div`
     font-size: 1.4rem;
 `
 
+const ProgressColumn = styled.div`
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const PlayColumn = styled.div`
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: purple;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const PlayButton = styled.div`
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+    margin: 5px;
+`
 export default function LearnSet({learnSet}) {
     console.log(JSON.stringify(learnSet))
     const {name, id, numCompleted, totalNumber} = learnSet
@@ -62,23 +86,23 @@ export default function LearnSet({learnSet}) {
                 <span>This is a description</span>
             </DescriptionRow>
             <Row>
-                <Col xs={12} sm={12} md={6} lg={5} xl={5} xxl={5} style={{fontSize: "1.5rem"}}>
-                    <strong>
+                <ProgressColumn as={Col} xs={12} sm={12} md={6} lg={5} xl={5} xxl={5}>
+                    <div>
                         <FontAwesomeIcon style={{color: "yellow"}} icon={faPlayCircle} /> Played 0 <span className="hidden-xs">sentences </span>(0%)
-                    </strong>
-                </Col>
-                <Col xs={12} sm={12} md={6} lg={5} xl={5} xxl={5} style={{fontSize: "1.5rem"}}>
-                    <strong>
+                    </div>
+                </ProgressColumn>
+                <ProgressColumn as={Col} xs={12} sm={12} md={6} lg={5} xl={5} xxl={5} style={{fontSize: "1.5rem"}}>
+                    <div>
                         <FontAwesomeIcon style={{color: "green"}} icon={faCheckCircle} /> Mastered {numCompleted} <span className="hidden-xs">sentences </span>(0%)
-                    </strong>
-                </Col>
+                    </div>
+                </ProgressColumn>
             {/*</Row>*/}
             {/*<Row>*/}
-                <Col xs={12} sm={12} md={12} lg={2} xl={2} xxl={2} as={Link} to="/mc/20%20German%20Sentences/lsid/50/10" className={"btn btn-success btn-lg btn-block joystix visible-xs"} style={{marginTop: "20px"}}>
-                    <strong>
+                <PlayColumn as={Col} xs={12} sm={12} md={12} lg={2} xl={2} xxl={2}>
+                    <PlayButton as={Link} to="/mc/20%20German%20Sentences/lsid/50/10" className={"btn btn-success btn-lg btn-block joystix visible-xs"}>
                         <FontAwesomeIcon icon="fa-solid fa-play" /> Play
-                    </strong>
-                </Col>
+                    </PlayButton>
+                </PlayColumn>
             </Row>
 
         </LearnSetCard>
