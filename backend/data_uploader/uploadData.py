@@ -13,10 +13,11 @@ from wonderwords import RandomWord, NoWordsToChoseFrom
 import random
 from deep_translator import GoogleTranslator
 
+
 w = RandomWord()
 LEARN_SET_NAME = '20 German Sentences'
-ORIGINAL_TEXT_LANGUAGE = 'deu'
-TRANSLATION_LANGUAGE = 'eng'
+ORIGINAL_TEXT_LANGUAGE = 'German'
+TRANSLATION_LANGUAGE = 'English'
 NUM_RANDOM_OPTIONS = 4
 BATCH_SIZE = 50
 pos_map = {'NOUN': 'nouns', 'VERB': 'verbs', 'ADJ': 'adjectives'}  # 'ADV': 'adverbs', 'AUX': ''}

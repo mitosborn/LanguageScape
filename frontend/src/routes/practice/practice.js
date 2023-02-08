@@ -15,6 +15,8 @@ export async function getQuestions(query) {
     searchParams.append("username", "liebe")
     searchParams.append("learnset", query.language)
     searchParams.append("num_translations", query.numQuestions)
+    searchParams.append('original_language', 'deu')
+    searchParams.append('target_language', 'eng')
     console.log(searchParams.toString())
     let questions = await (await fetch(`http://127.0.0.1:5000/translation?${searchParams.toString()}`)).json()
     console.log(questions)

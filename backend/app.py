@@ -98,5 +98,5 @@ def handle_malformed_request_exception(error):
 
 @app.errorhandler(Exception)
 def all_exception_handler(error):
-    return "Error: " + error.code
+    return "Error: " + str(error.code)
 

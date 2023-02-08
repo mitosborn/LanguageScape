@@ -16,19 +16,21 @@ translation_routes = Blueprint('question', __name__)
 
 @translation_routes.route("", methods=["GET"])
 def get_translation_set():
-    for param in ['username', 'learnset', 'num_translations']:
+    for param in ['username', 'learnset', 'num_translations', 'original_language', 'target_language']:
         if param not in request.args:
             raise MissingParameterException(action='GetTranslation', param=param)
 
     username = request.args.get('username')
     requested_learnset = request.args.get('learnset')
+    original_language = request.args.get('original_language')
+    target_language = request.args.get('target_language')
     User.get_item(username)
     requested_num_translations = int(request.args.get('num_translations'))
     print(username)
     user_learnset_progress = UserLearnsetProgress.safe_get(requested_learnset, username)
     if not user_learnset_progress:
         print("here")
-        learnset = Learnset.get_item(requested_learnset)
+        learnset = Learnset.get_item(f"{original_language}_{target_language}", requested_learnset)
         learnset_num_translations = learnset.number_translations
         user_learnset_progress = UserLearnsetProgress(requested_learnset,
                                                       username,
@@ -83,6 +85,12 @@ def answer_question():
         )
 
     return user_translation_progress.to_json()
+
+
+@translation_routes.route("learnsets", methods=["GET"])
+def get_available_learn_sets():
+    Learnset.safe_get()
+    pass
 
 
 class SetEncoder(json.JSONEncoder):

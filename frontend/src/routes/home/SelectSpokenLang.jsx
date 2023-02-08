@@ -1,5 +1,7 @@
 import {Col, Container, ListGroup, Row} from "react-bootstrap";
 import SelectLanguageDropdown from "./SelectLanguageDropdown.jsx";
+import {Link} from "react-router-dom";
+import SelectSpokenLangItem from "./SelectSpokenLangItem.jsx";
 
 export default function SelectSpokenLang() {
     return (
@@ -21,16 +23,10 @@ export default function SelectSpokenLang() {
             </Row>
             <Row className={"d-flex justify-content-around"}>
                 <Col>
-                    <ListGroup defaultActiveKey="#link1">
-                        <ListGroup.Item action href="#link1">
-                            German
-                        </ListGroup.Item>
-                        <ListGroup.Item action href="#link2">
-                            Spanish
-                        </ListGroup.Item>
-                        <ListGroup.Item action onClick={() => console.log("Clicked option")}>
-                            French
-                        </ListGroup.Item>
+                    <ListGroup>
+                        <SelectSpokenLangItem language={"German"} link={"/practice/deu-eng"}/>
+                        <SelectSpokenLangItem language={"Spanish"} link={"/practice/esp-eng"}/>
+                        <SelectSpokenLangItem language={"French"} link={"/practice/fr-eng"}/>
                     </ListGroup>
                 </Col>
             </Row>
