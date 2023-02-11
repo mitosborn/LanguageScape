@@ -1,3 +1,13 @@
+import styled from "styled-components";
+
+const SummaryQuestionText  = styled.div`
+     display: inline;
+`
+
+const Blank = styled(SummaryQuestionText)`
+    background-color: #FFFF00;
+`
+
 
 export default function SummaryQuestion({question}) {
     const {original_text, choices, answer} = question
@@ -8,10 +18,10 @@ export default function SummaryQuestion({question}) {
     let afterAnswer = sentence.substring(answerEnd)
 
     return (
-        <div className={"d-flex gap-2"}>
-            <h4>{beforeAnswer}</h4>
-            <h4 style={{backgroundColor: "#FFFF00"}}>{choices[answer]}</h4>
-            <h4>{afterAnswer}</h4>
-        </div>
+        <>
+            <SummaryQuestionText as={"h4"}>{beforeAnswer}</SummaryQuestionText>
+            <Blank as={"h4"}>{choices[answer]}</Blank>
+            <SummaryQuestionText as={"h4"}>{afterAnswer}</SummaryQuestionText>
+        </>
     )
 }

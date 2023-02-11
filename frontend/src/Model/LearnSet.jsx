@@ -75,7 +75,7 @@ const PlayButton = styled.div`
 `
 export default function LearnSet({learnSet}) {
     console.log(JSON.stringify(learnSet))
-    const {name, id, numCompleted, totalNumber} = learnSet
+    const {name, id, numCompleted, totalNumber, description} = learnSet
 
     return (
         <LearnSetCard as={Container} className={"panel-body"}>
@@ -83,7 +83,7 @@ export default function LearnSet({learnSet}) {
                 <span>{name}</span>
             </TitleRow>
             <DescriptionRow as={Row}>
-                <span>This is a description</span>
+                <span>{description}</span>
             </DescriptionRow>
             <Row>
                 <ProgressColumn as={Col} xs={12} sm={12} md={6} lg={5} xl={5} xxl={5}>

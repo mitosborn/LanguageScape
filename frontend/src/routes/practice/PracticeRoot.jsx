@@ -38,10 +38,9 @@ const ChooseLearnsetContainer = styled.div`
 
 
 export default function PracticeRoot() {
-    const { contacts, q } = useLoaderData();
+    const { language, targetLanguage, learnSets } = useLoaderData();
     const navigation = useNavigation();
     const submit = useSubmit();
-    const learnSets = useLoaderData();
 
     const searching =
         navigation.location &&
@@ -56,7 +55,7 @@ export default function PracticeRoot() {
         <ChooseLearnsetContainer as={Container} fluid={true}>
             <LearnTitleRow as={Row}>
                 <Col as={"h1"}>Practice Sets</Col>
-                <Col as={"h2"}><FontAwesomeIcon icon="fa-solid fa-language" /> English -> German</Col>
+                <Col as={"h2"}><FontAwesomeIcon icon="fa-solid fa-language" /> {language} -> {targetLanguage}</Col>
             </LearnTitleRow>
             <Row>
                 <LearnSetContainer as={Container} fluid={true}>
@@ -74,5 +73,5 @@ export async function loader({request, params}) {
     // const q = url.searchParams.get("q");
     // const contacts = await getContacts(q);
     // return { contacts, q };
-    return [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100}]
+    return {language: "English", targetLanguage: "German", learnSets: [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS1"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS2"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS3"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS4"}]}
 }
