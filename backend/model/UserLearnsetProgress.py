@@ -12,8 +12,8 @@ class UserLearnsetProgress(LangModel):
         write_capacity_units = 10
         read_capacity_units = 10
 
-    learnset_name = UnicodeAttribute(hash_key=True)
-    username = UnicodeAttribute(range_key=True)
+    username_original_translated_language = UnicodeAttribute(hash_key=True)
+    learnset_name = UnicodeAttribute(range_key=True)
     untried_translations = NumberSetAttribute()
     attempted_translations = NumberSetAttribute()
     mastered_translations = NumberSetAttribute()

@@ -23,21 +23,22 @@ BATCH_SIZE = 50
 pos_map = {'NOUN': 'nouns', 'VERB': 'verbs', 'ADJ': 'adjectives'}  # 'ADV': 'adverbs', 'AUX': ''}
 allowed_pos = {'NOUN', 'VERB', 'ADJ'}
 
-# Translation.delete_table()
-# quit(-1)
-if not Translation.exists():
-    Translation.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
-# if not Learnset.exists():
-#     Learnset.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
+Learnset.delete_table()
+quit(-1)
+
+# if not Translation.exists():
+#     Translation.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
+if not Learnset.exists():
+    Learnset.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 # if not UserTranslationProgress.exists():
 #     UserTranslationProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 # if not UserLearnsetProgress.exists():
 #     UserLearnsetProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 
-
-# new_learn_set = LearnSet(learn_set_name=LEARN_SET_NAME, original_text_language=ORIGINAL_TEXT_LANGUAGE,
-#                          translation_language=TRANSLATION_LANGUAGE, number_translations=20)
-# print(new_learn_set.save())
+new_learn_set = Learnset(learn_set_name=LEARN_SET_NAME, original_text_language=ORIGINAL_TEXT_LANGUAGE,
+                         translation_language=TRANSLATION_LANGUAGE, number_translations=20)
+print(new_learn_set.save())
+exit(1)
 
 
 def capitalizeWords(text):

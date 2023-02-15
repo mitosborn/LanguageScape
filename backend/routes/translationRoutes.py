@@ -27,13 +27,14 @@ def get_translation_set():
     User.get_item(username)
     requested_num_translations = int(request.args.get('num_translations'))
     print(username)
-    user_learnset_progress = UserLearnsetProgress.safe_get(requested_learnset, username)
+    user_learnset_progress = UserLearnsetProgress.safe_get(f"{username}_{original_language}_{target_language}",
+                                                           requested_learnset)
     if not user_learnset_progress:
         print("here")
         learnset = Learnset.get_item(f"{original_language}_{target_language}", requested_learnset)
         learnset_num_translations = learnset.number_translations
-        user_learnset_progress = UserLearnsetProgress(requested_learnset,
-                                                      username,
+        user_learnset_progress = UserLearnsetProgress(f"{username}_{original_language}_{target_language}",
+                                                      requested_learnset,
                                                       untried_translations=set(range(learnset_num_translations)),
                                                       attempted_translations=set(), mastered_translations=set(),
                                                       number_translations=learnset_num_translations,
@@ -88,9 +89,25 @@ def answer_question():
 
 
 @translation_routes.route("learnsets", methods=["GET"])
-def get_available_learn_sets():
-    Learnset.safe_get()
-    pass
+def get_available_learnsets():
+    for param in ['language', 'username']:
+        if param not in request.args:
+            raise MissingParameterException(action='GetLearnsets', param=param)
+    language = request.args.get('language')
+    username = request.args.get('username')
+
+    result = list()
+    in_progress_learnsets = UserLearnsetProgress.query(f"{username}_{language}")
+    all_learnsets = Learnset.query(language)
+    in_progress_learnset_set = set()
+    for learnset in in_progress_learnsets:
+        result.append(learnset.to_json())
+        in_progress_learnset_set.add(learnset.learnset_name)
+    for learnset in all_learnsets:
+        if learnset.learnset_name not in in_progress_learnset_set:
+            result.append(learnset.to_json())
+
+    return result
 
 
 class SetEncoder(json.JSONEncoder):
