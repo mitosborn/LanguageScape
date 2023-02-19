@@ -19,3 +19,17 @@ class UserLearnsetProgress(LangModel):
     mastered_translations = NumberSetAttribute()
     number_translations = NumberAttribute()
     last_attempted = UTCDateTimeAttribute(null=True)
+
+    def __json__(self):
+        dict_obj = self.to_dict()
+        if hasattr(dict_obj, "attempted_translations"):
+            dict_obj["number_attempted_translations"] = len(dict_obj["attempted_translations"])
+        else:
+            dict_obj["number_attempted_translations"] = 0
+
+        if hasattr(dict_obj, "mastered_translations"):
+            dict_obj["number_mastered_translations"] = len(dict_obj["mastered_translations"])
+        else:
+            dict_obj["number_mastered_translations"] = 0
+
+        return dict_obj

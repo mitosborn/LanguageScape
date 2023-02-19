@@ -5,6 +5,7 @@ import {Col, Row} from "react-bootstrap";
 import LearnSet from "../../Model/LearnSet.jsx";
 import styled from "styled-components";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {getLearnsets} from "./practice.js";
 
 export async function action() {
     // const contact = await createContact();
@@ -69,9 +70,7 @@ export default function PracticeRoot() {
 
 export async function loader({request, params}) {
     console.log(params)
-    // const url = new URL(request.url);
-    // const q = url.searchParams.get("q");
-    // const contacts = await getContacts(q);
-    // return { contacts, q };
+    const learnsets = await getLearnsets(params);
+    console.log(learnsets)
     return {language: "English", targetLanguage: "German", learnSets: [{name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS1"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS2"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS3"}, {name: "Top 100", id: 1, numCompleted: 0, totalNumber: 100, description: "LS4"}]}
 }

@@ -1,8 +1,9 @@
 from flask import jsonify
 from pynamodb.exceptions import DeleteError, PutError
 from pynamodb.models import Model
-
+import json_fix
 from exceptions.request_exceptions import EntityNotFoundException
+from pynamodb.util import attribute_value_to_json
 
 
 class LangModel(Model):
@@ -82,3 +83,10 @@ class LangModel(Model):
             return jsonify(isError=True,
                            message=f"Error saving {self.__class__.__name__}: {self.to_json()}",
                            statusCode=400), 400
+
+    def to_dict(self):
+        return {k: attribute_value_to_json(v) for k, v in self.serialize().items()}
+
+    def __json__(self):
+        return self.to_dict()
+

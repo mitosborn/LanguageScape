@@ -1,7 +1,3 @@
-import localforage from "localforage";
-import { matchSorter } from "match-sorter";
-import sortBy from "sort-by";
-
 export async function getQuestions(query) {
     // await fakeNetwork(`getContacts:${query}`);
     // let contacts = await localforage.getItem("contacts");
@@ -28,6 +24,16 @@ export async function submitQuestion(query) {
     console.log(query)
 }
 
+
+export async function getLearnsets(query) {
+    let searchParams = new URLSearchParams()
+    searchParams.append("username", "liebe")
+    searchParams.append("language", "deu_eng")
+    let learnsets = await (await fetch(`http://127.0.0.1:5000/translation/learnsets?${searchParams.toString()}`)).json()
+    learnsets = learnsets.map(learnset => JSON.parse(learnset))
+    console.log(learnsets)
+    return learnsets
+}
 
 
 // export async function createContact() {

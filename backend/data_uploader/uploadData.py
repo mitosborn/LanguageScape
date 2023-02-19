@@ -1,5 +1,6 @@
 import json
 import time
+from datetime import datetime
 
 from flask import jsonify
 
@@ -16,29 +17,34 @@ from deep_translator import GoogleTranslator
 
 w = RandomWord()
 LEARN_SET_NAME = '20 German Sentences'
-ORIGINAL_TEXT_LANGUAGE = 'German'
-TRANSLATION_LANGUAGE = 'English'
+ORIGINAL_TEXT_LANGUAGE = 'deu'
+TRANSLATION_LANGUAGE = 'eng'
 NUM_RANDOM_OPTIONS = 4
 BATCH_SIZE = 50
 pos_map = {'NOUN': 'nouns', 'VERB': 'verbs', 'ADJ': 'adjectives'}  # 'ADV': 'adverbs', 'AUX': ''}
 allowed_pos = {'NOUN', 'VERB', 'ADJ'}
 
-Learnset.delete_table()
-quit(-1)
+# Learnset.delete_table()
+# quit(-1)
 
 # if not Translation.exists():
 #     Translation.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
-if not Learnset.exists():
-    Learnset.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
+# if not Learnset.exists():
+#     Learnset.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 # if not UserTranslationProgress.exists():
 #     UserTranslationProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 # if not UserLearnsetProgress.exists():
 #     UserLearnsetProgress.create_table(read_capacity_units=10, write_capacity_units=10, wait=True)
 
-new_learn_set = Learnset(learn_set_name=LEARN_SET_NAME, original_text_language=ORIGINAL_TEXT_LANGUAGE,
-                         translation_language=TRANSLATION_LANGUAGE, number_translations=20)
-print(new_learn_set.save())
-exit(1)
+# new_learn_set = Learnset(name=LEARN_SET_NAME,
+#                          original_translated_language=f"{ORIGINAL_TEXT_LANGUAGE}_{TRANSLATION_LANGUAGE}",
+#                          original_text_language=ORIGINAL_TEXT_LANGUAGE,
+#                          translation_language=TRANSLATION_LANGUAGE,
+#                          number_translations=20,
+#                          last_updated=datetime.utcnow(),
+#                          date_created=datetime.utcnow())
+# print(new_learn_set.save())
+# exit(1)
 
 
 def capitalizeWords(text):

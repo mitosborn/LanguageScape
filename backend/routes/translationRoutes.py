@@ -8,8 +8,8 @@ from model.Translation import Translation
 from model.User import User
 from model.UserLearnsetProgress import UserLearnsetProgress
 import json
-
 from model.UserTranslationProgress import UserTranslationProgress
+from flask import current_app
 
 translation_routes = Blueprint('question', __name__)
 
@@ -96,18 +96,21 @@ def get_available_learnsets():
     language = request.args.get('language')
     username = request.args.get('username')
 
-    result = list()
+    result = {"in_progress": [], "unattempted": []}
+    current_app.logger.info("get_available_learnsets request")
     in_progress_learnsets = UserLearnsetProgress.query(f"{username}_{language}")
+    current_app.logger.info("queried in_progress_learnsets")
     all_learnsets = Learnset.query(language)
+    current_app.logger.info("queried all_learnsets")
     in_progress_learnset_set = set()
     for learnset in in_progress_learnsets:
-        result.append(learnset.to_json())
+        result["in_progress"].append(learnset)
         in_progress_learnset_set.add(learnset.learnset_name)
     for learnset in all_learnsets:
-        if learnset.learnset_name not in in_progress_learnset_set:
-            result.append(learnset.to_json())
+        # if learnset.name not in in_progress_learnset_set:
+        result["unattempted"].append(learnset)
 
-    return result
+    return json.dumps(result)
 
 
 class SetEncoder(json.JSONEncoder):
