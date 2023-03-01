@@ -107,8 +107,8 @@ def get_available_learnsets():
         result["in_progress"].append(learnset)
         in_progress_learnset_set.add(learnset.learnset_name)
     for learnset in all_learnsets:
-        # if learnset.name not in in_progress_learnset_set:
-        result["unattempted"].append(learnset)
+        if learnset.name not in in_progress_learnset_set:
+            result["unattempted"].append(learnset)
 
     return json.dumps(result)
 

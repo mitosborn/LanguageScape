@@ -22,6 +22,15 @@ export async function getQuestions(query) {
 
 export async function submitQuestion(query) {
     console.log(query)
+    let urlParams = new URLSearchParams()
+    urlParams.append("username", "liebe")
+    urlParams.append("language", "deu_eng")
+    urlParams.append("learnset", "20 German Sentences")
+    urlParams.append("translation_id", "1")
+    urlParams.append("result", "true")
+
+    let result = await (await fetch(`http://127.0.0.1:5000/translation?${urlParams.toString()}`, {'method': "POST"})).json()
+    console.log(result)
 }
 
 
@@ -30,7 +39,7 @@ export async function getLearnsets(query) {
     searchParams.append("username", "liebe")
     searchParams.append("language", "deu_eng")
     let learnsets = await (await fetch(`http://127.0.0.1:5000/translation/learnsets?${searchParams.toString()}`)).json()
-    learnsets = learnsets.map(learnset => JSON.parse(learnset))
+    // learnsets = learnsets.map(learnset => JSON.parse(learnset))
     console.log(learnsets)
     return learnsets
 }

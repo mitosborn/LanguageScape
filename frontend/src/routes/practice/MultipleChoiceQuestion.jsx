@@ -7,7 +7,7 @@ import Container from "react-bootstrap/Container";
 import {Col, Row} from "react-bootstrap";
 import {Button} from "@mui/material";
 import {useState} from "react";
-import {getQuestions} from "./practice.js";
+import {getQuestions, submitQuestion} from "./practice.js";
 import SessionSummary from "./SessionSummary.jsx";
 import PracticeNavBar from "./PracticeNavBar.jsx";
 import {updateContact} from "../../contacts.js";
@@ -65,14 +65,23 @@ export default function MultipleChoiceQuestion() {
         submit(null, {method: "post"})
         // redirect(`/practice/${language}/${mode}/${parseInt(currentQuestion) + parseInt(numQuestions)}/${numQuestions}`)
     }
-    async function submitAnswer() {
-        // let formData = new FormData();
-        // formData.append("answer", "false")
-        // formData.append("id", "mbo2")
-        // submit(formData, {method: "post"})
-        setShowSummary(true)
+    // async function showSummary() {
+    //     // let formData = new FormData();
+    //     // formData.append("answer", "false")
+    //     // formData.append("id", "mbo2")
+    //     // submit(formData, {method: "post"})
+    //     setShowSummary(true)
+    //
+    // }
 
-    }
+    // function uploadAnswer() {
+    //     // let formData = new FormData();
+    //     // formData.append("answer", "false")
+    //     // formData.append("id", "mbo2")
+    //     // submit(formData, {method: "post"})
+    //     let promise = submitQuestion({});
+    // }
+
     function nextQuestion() {
         if (questionIdx + 1 === questions.length){
             setShowSummary(true)
@@ -83,6 +92,7 @@ export default function MultipleChoiceQuestion() {
             setQuestionIdx(questionIdx + 1)
             setSelectedAnswerId(-1)
             setQuestionAnswered(false)
+            return submitQuestion({})
         }
 
     }
@@ -121,7 +131,7 @@ export default function MultipleChoiceQuestion() {
                                 <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> nextQuestion()}>
                                     {"Next Question"}
                                 </Button>
-                                <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> submitAnswer()}>
+                                <Button hidden={!questionAnswered} color={"info"} variant="contained" size="lg" onClick={()=> setShowSummary(true)}>
                                     {"Summary"}
                                 </Button>
                             </div>
