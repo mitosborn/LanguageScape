@@ -47,11 +47,17 @@ export default function MultipleChoiceQuestion() {
             setSelectedAnswerId(answer)
             if (answer === questions[questionIdx]['answer']) {
                 setQuestionsCorrect([...questionsCorrect, questions[questionIdx]])
+                // return submitQuestion({username: "liebe", language:"", learnset, translation_id, result})
 
             }
             else {
                 setQuestionsWrong([...questionsWrong, questions[questionIdx]])
+                // return submitQuestion({})
+
             }
+            console.log("Calling submitQuestion")
+            return submitQuestion({...questions[questionIdx], result: answer === questions[questionIdx]['answer'],
+                username: "liebe"})
         }
     }
 
@@ -92,7 +98,6 @@ export default function MultipleChoiceQuestion() {
             setQuestionIdx(questionIdx + 1)
             setSelectedAnswerId(-1)
             setQuestionAnswered(false)
-            return submitQuestion({})
         }
 
     }

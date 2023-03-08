@@ -21,16 +21,14 @@ export async function getQuestions(query) {
 }
 
 export async function submitQuestion(query) {
-    console.log(query)
+    const {username, learn_set_name, translation_id, result} = query;
     let urlParams = new URLSearchParams()
-    urlParams.append("username", "liebe")
-    urlParams.append("language", "deu_eng")
-    urlParams.append("learnset", "20 German Sentences")
-    urlParams.append("translation_id", "1")
-    urlParams.append("result", "true")
-
-    let result = await (await fetch(`http://127.0.0.1:5000/translation?${urlParams.toString()}`, {'method': "POST"})).json()
-    console.log(result)
+    urlParams.append("username", username)
+    urlParams.append("learnset", learn_set_name)
+    urlParams.append("translation_id", translation_id)
+    urlParams.append("result", result)
+    let promiseResult = await (await fetch(`http://127.0.0.1:5000/translation?${urlParams.toString()}`, {'method': "POST"})).json()
+    console.log(promiseResult)
 }
 
 
