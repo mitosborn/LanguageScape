@@ -1,3 +1,5 @@
+import os
+
 from flask import jsonify
 from pynamodb.exceptions import DeleteError, PutError
 from pynamodb.models import Model
@@ -6,7 +8,17 @@ from exceptions.request_exceptions import EntityNotFoundException
 from pynamodb.util import attribute_value_to_json
 
 
+# Specify region dynamically: https://github.com/pynamodb/PynamoDB/issues/177
+def table_region():
+    print(os.environ.get('DB_REGION'))
+    return os.environ.get('DB_REGION')
+
+
 class LangModel(Model):
+    class Meta:
+        region = table_region()
+        write_capacity_units = 10
+        read_capacity_units = 10
 
     @classmethod
     def safe_get(cls, *args):
@@ -89,4 +101,3 @@ class LangModel(Model):
 
     def __json__(self):
         return self.to_dict()
-

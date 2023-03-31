@@ -6,11 +6,8 @@ from model.LangModel import LangModel
 
 
 class User(LangModel):
-    class Meta:
+    class Meta(LangModel.Meta):
         table_name = 'users'
-        region = 'us-east-1'
-        write_capacity_units = 10
-        read_capacity_units = 10
 
     username = UnicodeAttribute(hash_key=True)
     email = UnicodeAttribute(null=False)

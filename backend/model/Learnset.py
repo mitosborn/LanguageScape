@@ -5,11 +5,8 @@ from model.LangModel import LangModel
 
 
 class Learnset(LangModel):
-    class Meta:
+    class Meta(LangModel.Meta):
         table_name = 'learnsets'
-        region = 'us-east-1'
-        write_capacity_units = 10
-        read_capacity_units = 10
 
     original_translated_language = UnicodeAttribute(hash_key=True)
     # Add ID field; request deu_eng, ls_ID (language, learnset_id)

@@ -6,11 +6,8 @@ from model.LangModel import LangModel
 
 
 class Translation(LangModel):
-    class Meta:
+    class Meta(LangModel.Meta):
         table_name = 'translations'
-        region = 'us-east-1'
-        write_capacity_units = 10
-        read_capacity_units = 10
 
     learn_set_name = UnicodeAttribute(hash_key=True)
     translation_id = NumberAttribute(range_key=True)
