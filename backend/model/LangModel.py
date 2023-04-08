@@ -96,6 +96,10 @@ class LangModel(Model):
                            message=f"Error saving {self.__class__.__name__}: {self.to_json()}",
                            statusCode=400), 400
 
+    @classmethod
+    def tst(cls):
+        pass
+        # cls.
     def to_dict(self):
         return {k: attribute_value_to_json(v) for k, v in self.serialize().items()}
 

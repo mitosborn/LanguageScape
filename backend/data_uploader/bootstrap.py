@@ -2,7 +2,7 @@ import json
 import random
 import time
 from datetime import datetime
-
+import logging
 import spacy
 from deep_translator import GoogleTranslator
 from typing import List
@@ -17,7 +17,7 @@ from model.UserLearnsetProgress import UserLearnsetProgress
 from model.UserTranslationProgress import UserTranslationProgress
 from wonderwords import RandomWord, NoWordsToChoseFrom
 
-TABLES = [Learnset, Translation, User, UserLearnsetProgress, UserTranslationProgress]
+TABLES: List[LangModel] = [Learnset, Translation, User, UserLearnsetProgress, UserTranslationProgress]
 LEARN_SET_NAME = '20 German Sentences'
 ORIGINAL_TEXT_LANGUAGE = 'deu'
 TRANSLATION_LANGUAGE = 'eng'
@@ -30,6 +30,7 @@ NUM_RANDOM_OPTIONS = 4
 BATCH_SIZE = 50
 pos_map = {'NOUN': 'nouns', 'VERB': 'verbs', 'ADJ': 'adjectives'}  # 'ADV': 'adverbs', 'AUX': ''}
 allowed_pos = {'NOUN', 'VERB', 'ADJ'}
+logging.getLogger().setLevel(logging.INFO)
 
 
 def create_table(table_cls: LangModel):
@@ -39,7 +40,19 @@ def create_table(table_cls: LangModel):
 
 
 def create_default_user():
-    pass
+    default_user = {"email": "mbo2@rice.edu", "username": "liebe", "preferred_language": "eng"}
+    print("Within create_default_user()")
+    if not User.safe_get(default_user['username']):
+        print("User does not exist")
+        logging.info("Creating default user")
+        # User(default_user['username'],
+        #      email=default_user['email'],
+        #      preferred_language=default_user['preferred_language'],
+        #      languages_spoken={default_user['preferred_language']},
+        #      account_created=datetime.utcnow()).safe_save()
+    else:
+        print("User exists")
+        logging.info("Default user exists")
 
 
 def create_default_learnset():
@@ -56,17 +69,16 @@ def read_data(file_name: str, num_entries: int = 20, max_original_text_length: i
     data, i = list(), 0
     with open(file_name) as json_data:
         tmp = json.load(json_data)
-        while i < min(len(data), num_entries):
+        while i < min(len(tmp), num_entries):
             if len(tmp[i]['original_text']) <= max_original_text_length:
                 data.append(tmp[i])
             i += 1
     return data
 
 
-def write_default_learnset(debug=False):
-    nlp = spacy.load("de_core_news_sm")
-    data = read_data('groupedByTranslations.json')
-
+def create_default_learnset_translations(spacy_model, data_file_name, debug=False):
+    nlp = spacy.load(spacy_model)
+    data = read_data(data_file_name)
     total_translations = list()
     question_num = 0
     for batch in split(data, BATCH_SIZE):
@@ -74,7 +86,7 @@ def write_default_learnset(debug=False):
         word_choices = list()
         starting_question_num = question_num
         for item in batch:
-            doc = nlp(capitalizeWords(item['original_text']))
+            doc = nlp(capitalize_words(item['original_text']))
             tokens = list()
             for j, token in enumerate(doc):
                 if token.pos_ in allowed_pos and token.text != '%':
@@ -110,6 +122,8 @@ def write_default_learnset(debug=False):
         print(spacy.explain('oc'))
 
         ## len <= 80
+        if debug:
+            print(translations)
         start = time.time()
         result = GoogleTranslator('en', 'de').translate(', '.join(word_choices), proxies=proxy).split(", ")
         print(time.time() - start)
@@ -117,37 +131,51 @@ def write_default_learnset(debug=False):
         # Medium = NOUN
 
         for i, random_wrd_lst in enumerate(split(result, NUM_RANDOM_OPTIONS)):
-            curr_translation = translations[starting_question_num + i]
-            chosen_word = curr_translation['chosen_word']
-            chosen_word_idx = random.randint(0, NUM_RANDOM_OPTIONS - 1)  # 0, 1, 2, 3
-            choices = [wrd for wrd in random_wrd_lst if wrd != chosen_word][0:3]  # Extra word generated cut out
-            choices.insert(chosen_word_idx, chosen_word)
-            # choices = choices[:chosen_word_idx] + [chosen_word] + choices[chosen_word_idx:]
-            total_translations.append(
-                Translation(learn_set_name=LEARN_SET_NAME, translation_id=starting_question_num + i,
-                            original_text_language=ORIGINAL_TEXT_LANGUAGE,
-                            translation_language=TRANSLATION_LANGUAGE,
-                            original_text=curr_translation['original_text'],
-                            translation=set(curr_translation['eng_translation']),
-                            choices=choices,
-                            answer=chosen_word_idx))
+            translation_id = starting_question_num + i
+            total_translations.append(create_translation(translations[starting_question_num + i], random_wrd_lst,
+                                                         translation_id))
 
     print(question_num, len(total_translations))
-    # for item in total_translations:
-    #     print(item.choices, item.original_text, item.answer)
-    #     if item.choices[item.answer] not in item.original_text:
-    #         print(item.choices, item.answer, item.choices[item.answer], item.original_text)
-    #         exit(-1)
-    # upload_translations(total_translations)
+    validate_translations(total_translations)
+    print(list(map(lambda x: x.to_dict(), total_translations)))
+    return total_translations
 
 
-def upload_translations(translations: List[Translation]):
+def create_translation(translation_dict, random_wrd_lst, translation_id):
+    chosen_word = translation_dict['chosen_word']
+    chosen_word_idx = random.randint(0, NUM_RANDOM_OPTIONS - 1)  # 0, 1, 2, 3
+    choices = [wrd for wrd in random_wrd_lst if wrd != chosen_word][0:3]  # Extra word generated cut out
+    choices.insert(chosen_word_idx, chosen_word)
+    # choices = choices[:chosen_word_idx] + [chosen_word] + choices[chosen_word_idx:]
+    return Translation(learn_set_name=LEARN_SET_NAME, translation_id=translation_id,
+                       original_text_language=ORIGINAL_TEXT_LANGUAGE,
+                       translation_language=TRANSLATION_LANGUAGE,
+                       original_text=translation_dict['original_text'],
+                       translation=set(translation_dict['eng_translation']),
+                       choices=choices,
+                       answer=chosen_word_idx)
+
+
+def validate_translations(translations: List[Translation]):
+    for translation in translations:
+        validate_translation(translation)
+
+
+def validate_translation(translation: Translation):
+    if translation.choices[translation.answer] not in translation.original_text:
+        print("ERROR: Answer not in original text", translation.choices, translation.answer,
+              translation.choices[translation.answer],
+              translation.original_text)
+        exit(-1)
+
+
+def upload_translations(translations_to_upload: List[Translation]):
     with Translation.batch_write() as batch:
-        for item in translations:
+        for item in translations_to_upload:
             batch.save(item)
 
 
-def capitalizeWords(text):
+def capitalize_words(text):
     newText = ''
     for sentence in text.split('.'):
         newSentence = ''
@@ -160,3 +188,18 @@ def capitalizeWords(text):
 
 def split(lst, n):
     return [lst[idx:idx + n] for idx in range(0, len(lst), n)]
+
+
+def create_tables():
+    for table_cls in TABLES:
+        create_table(table_cls)
+        if not table_cls.exists():
+            print("Could not create DDB Table: " + table_cls.Meta.__name__)
+        else:
+            print("DDB Table: " + table_cls.__name__ + " exists")
+
+
+create_tables()
+create_default_user()
+# translations = create_default_learnset_translations(spacy_model="de_core_news_sm", data_file_name="groupedByTranslations.json", debug=False)
+# upload_translations(translations)
