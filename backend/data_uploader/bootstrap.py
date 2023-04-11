@@ -66,13 +66,15 @@ def create_default_learnset():
 
 
 def read_data(file_name: str, num_entries: int = 20, max_original_text_length: int = 80):
-    data, i = list(), 0
+    data = list()
     with open(file_name) as json_data:
         tmp = json.load(json_data)
-        while i < min(len(tmp), num_entries):
-            if len(tmp[i]['original_text']) <= max_original_text_length:
+        for i, translation_json in enumerate(tmp):
+            if len(translation_json['original_text']) <= max_original_text_length:
                 data.append(tmp[i])
-            i += 1
+            if len(data) == num_entries:
+                break
+
     return data
 
 
@@ -198,6 +200,7 @@ def create_tables():
 
 create_tables()
 create_default_user()
-translations = create_default_learnset_translations(spacy_model="de_core_news_sm",
-                                                    data_file_name="groupedByTranslations.json", debug=False)
+create_default_learnset()
+# translations = create_default_learnset_translations(spacy_model="de_core_news_sm",
+#                                                     data_file_name="groupedByTranslations.json", debug=False)
 # upload_translations(translations)
