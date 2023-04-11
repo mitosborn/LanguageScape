@@ -6,9 +6,9 @@ import logging
 import spacy
 from deep_translator import GoogleTranslator
 from typing import List
-from wonderwords import NoWordsToChoseFrom
 
 from constants import DEFAULT_READ_CAPACITY_UNITS, DEFAULT_WRITE_CAPACITY_UNITS
+from exceptions.model_exceptions import InvalidTranslationException
 from model.LangModel import LangModel
 from model.Learnset import Learnset
 from model.Translation import Translation
@@ -42,7 +42,7 @@ def create_table(table_cls: LangModel):
 def create_default_user():
     default_user = {"email": "mbo2@rice.edu", "username": "liebe", "preferred_language": "eng"}
     print("Within create_default_user()")
-    if not User.safe_get(default_user['username']):
+    if not User.entry_exists(default_user['username']):
         print("User does not exist")
         logging.info("Creating default user")
         # User(default_user['username'],
@@ -163,10 +163,7 @@ def validate_translations(translations: List[Translation]):
 
 def validate_translation(translation: Translation):
     if translation.choices[translation.answer] not in translation.original_text:
-        print("ERROR: Answer not in original text", translation.choices, translation.answer,
-              translation.choices[translation.answer],
-              translation.original_text)
-        exit(-1)
+        raise InvalidTranslationException(translation)
 
 
 def upload_translations(translations_to_upload: List[Translation]):
@@ -201,5 +198,6 @@ def create_tables():
 
 create_tables()
 create_default_user()
-# translations = create_default_learnset_translations(spacy_model="de_core_news_sm", data_file_name="groupedByTranslations.json", debug=False)
+translations = create_default_learnset_translations(spacy_model="de_core_news_sm",
+                                                    data_file_name="groupedByTranslations.json", debug=False)
 # upload_translations(translations)
