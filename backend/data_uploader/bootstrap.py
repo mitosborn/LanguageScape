@@ -203,4 +203,4 @@ create_default_user()
 create_default_learnset()
 # translations = create_default_learnset_translations(spacy_model="de_core_news_sm",
 #                                                     data_file_name="groupedByTranslations.json", debug=False)
-# upload_translations(translations)
+# upload_translations(translations) A comment
