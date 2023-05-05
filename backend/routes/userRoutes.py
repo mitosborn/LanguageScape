@@ -1,49 +1,38 @@
 from datetime import datetime
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 
-from exceptions.request_exceptions import MissingParameterException, MalformedRequestException
 from model.User import User
+from routes.routeHelpers import get_params
 
 user_routes = Blueprint('user', __name__)
 
 
 @user_routes.route("", methods=["GET"])
 def get_user():
-    if 'username' not in request.args:
-        raise MissingParameterException(action='GetUser', param='username')
-    username = request.args.get('username')
+    username = get_params(action='GetUser', param_lst=['username'])
     return User.get_item_json_response(username)
 
 
 @user_routes.route("", methods=["POST"])
 def create_user():
-    json = request.get_json(force=True, silent=True)
-    if not json:
-        raise MalformedRequestException(f'CreateUser Error: JSON payload is malformed')
-
-    for param in ['username', 'email', 'preferred_language']:
-        if param not in json:
-            raise MissingParameterException(action='CreateUser', param=param)
-
-    user = User.safe_get(json['username'])
+    username, email, preferred_language = get_params(action='CreateUser', param_lst=['username', 'email', 'preferred_language'])
+    user = User.safe_get(username)
     if user:
         return jsonify(isError=True,
                        message="Error: User already exists",
                        statusCode=400,
                        data=user.to_json()), 400
     else:
-        new_user = User(json['username'],
-                        email=json['email'],
-                        preferred_language=json['preferred_language'],
-                        languages_spoken={json['preferred_language']},
+        new_user = User(username,
+                        email=email,
+                        preferred_language=preferred_language,
+                        languages_spoken={preferred_language},
                         account_created=datetime.utcnow())
         return new_user.save_item_json_response()
 
 
 @user_routes.route("", methods=["DELETE"])
 def delete_user():
-    if 'username' not in request.args:
-        raise MissingParameterException(action='DeleteUser', param='username')
-    username = request.args.get('username')
+    username = get_params(action='DeleteUser', param_lst=['username'])
     return User.delete_item_json_response(username)

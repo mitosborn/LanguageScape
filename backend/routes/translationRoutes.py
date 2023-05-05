@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from flask import Blueprint, request
+from flask import Blueprint
 
-from exceptions.request_exceptions import MissingParameterException
 from model.Learnset import Learnset
 from model.Translation import Translation
 from model.User import User
@@ -11,21 +10,17 @@ import json
 from model.UserTranslationProgress import UserTranslationProgress
 from flask import current_app
 
+from routes.routeHelpers import get_params
+
 translation_routes = Blueprint('question', __name__)
 
 
 @translation_routes.route("", methods=["GET"])
 def get_translation_set():
-    for param in ['username', 'learnset', 'num_translations', 'original_language', 'target_language']:
-        if param not in request.args:
-            raise MissingParameterException(action='GetTranslation', param=param)
-
-    username = request.args.get('username')
-    requested_learnset = request.args.get('learnset')
-    original_language = request.args.get('original_language')
-    target_language = request.args.get('target_language')
+    username, requested_learnset, num_translations, original_language, target_language = get_params(action='GetTranslation', param_lst=['username', 'learnset', 'num_translations', 'original_language', 'target_language'])
+    # Verify that the user exists (Throws EntityNotFoundException otherwise)
     User.get_item(username)
-    requested_num_translations = int(request.args.get('num_translations'))
+    requested_num_translations = int(num_translations)
     print(username)
     user_learnset_progress = UserLearnsetProgress.safe_get(f"{username}_{original_language}_{target_language}",
                                                            requested_learnset)
@@ -59,14 +54,8 @@ def get_translation_set():
 
 @translation_routes.route("", methods=["POST"])
 def answer_question():
-    for param in ['username', 'learnset', 'translation_id', 'result']:
-        if param not in request.args:
-            raise MissingParameterException(action='AnswerTranslation', param=param)
-
-    username = request.args.get('username')
-    translation_id = int(request.args.get('translation_id'))
-    learnset = request.args.get('learnset')
-    translation_result = 1 if request.args.get('result') == 'true' else 0
+    username, learnset, translation_id, result = get_params(action='AnswerTranslation', param_lst=['username', 'learnset', 'translation_id', 'result'])
+    translation_result = 1 if result == 'true' else 0
     User.get_item(username)
     user_translation_progress = UserTranslationProgress.safe_get(learnset + username, translation_id)
     if not user_translation_progress:
@@ -90,11 +79,7 @@ def answer_question():
 
 @translation_routes.route("learnsets", methods=["GET"])
 def get_available_learnsets():
-    for param in ['language', 'username']:
-        if param not in request.args:
-            raise MissingParameterException(action='GetLearnsets', param=param)
-    language = request.args.get('language')
-    username = request.args.get('username')
+    language, username = get_params('GetLearnsets', ['language', 'username'])
 
     result = {"in_progress": [], "unattempted": []}
     current_app.logger.info("get_available_learnsets request")

@@ -18,7 +18,7 @@ app = Flask(__name__)
 CORS(app)
 app.register_blueprint(user_routes, url_prefix='/user')
 app.register_blueprint(translation_routes, url_prefix='/translation')
-
+print("In app.py")
 questionNumber = 0
 questions = [{
     "id": 1,
