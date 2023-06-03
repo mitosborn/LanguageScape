@@ -1,3 +1,5 @@
+import {getBackendEndpoint} from "../../constants.js";
+
 export async function getQuestions(query) {
     // await fakeNetwork(`getContacts:${query}`);
     // let contacts = await localforage.getItem("contacts");
@@ -14,7 +16,7 @@ export async function getQuestions(query) {
     searchParams.append('original_language', 'deu')
     searchParams.append('target_language', 'eng')
     console.log(searchParams.toString())
-    let questions = await (await fetch(`http://127.0.0.1:5000/translation?${searchParams.toString()}`)).json()
+    let questions = await (await fetch(getBackendEndpoint() + `/translation?${searchParams.toString()}`)).json()
     console.log(questions)
     questions = questions.map((question) => ({...question, original_text : question['original_text'].replaceAll("\" \"","\"\n\"")}))
     return questions;
@@ -27,7 +29,7 @@ export async function submitQuestion(query) {
     urlParams.append("learnset", learn_set_name)
     urlParams.append("translation_id", translation_id)
     urlParams.append("result", result)
-    let promiseResult = await (await fetch(`http://127.0.0.1:5000/translation?${urlParams.toString()}`, {'method': "POST"})).json()
+    let promiseResult = await (await fetch(getBackendEndpoint() + `/translation?${urlParams.toString()}`, {'method': "POST"})).json()
     console.log(promiseResult)
 }
 
@@ -36,7 +38,7 @@ export async function getLearnsets(query) {
     let searchParams = new URLSearchParams()
     searchParams.append("username", "liebe")
     searchParams.append("language", "deu_eng")
-    let learnsets = await (await fetch(`http://127.0.0.1:5000/translation/learnsets?${searchParams.toString()}`)).json()
+    let learnsets = await (await fetch(getBackendEndpoint()+ `/translation/learnsets?${searchParams.toString()}`)).json()
     // learnsets = learnsets.map(learnset => JSON.parse(learnset))
     console.log(learnsets)
     return learnsets

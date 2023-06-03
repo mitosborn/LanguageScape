@@ -36,3 +36,5 @@ def create_user():
 def delete_user():
     username = get_params(action='DeleteUser', param_lst=['username'])
     return User.delete_item_json_response(username)
+
+

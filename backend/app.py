@@ -1,23 +1,51 @@
+import os
 from datetime import datetime
 
-from flask import Flask, after_this_request, jsonify, request
+from flask import Flask, after_this_request, jsonify, request, render_template, redirect, url_for
+from flask_dance.contrib.google import make_google_blueprint, google
+from dotenv import load_dotenv
 from os import environ
+
+from flask_debugtoolbar import DebugToolbarExtension
 from requests import get
 from flask_cors import CORS
 from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
 from model.User import User
 from pynamodb.exceptions import (DeleteError, PutError)
-
 from routes.translationRoutes import translation_routes
 from routes.userRoutes import user_routes
 
+load_dotenv()
 IS_DEV = environ["FLASK_ENV"] == "development"
 WEBPACK_DEV_SERVER_HOST = "http://localhost:3000"
+client_id = os.getenv('GOOGLE_CLIENT_ID')
+client_secret = os.getenv('GOOGLE_CLIENT_SECRET')
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
+print(client_id, client_secret)
 app = Flask(__name__)
+app.debug = True
+
+# set a 'SECRET_KEY' to enable the Flask session cookies
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY") or os.urandom(24)
+# app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+
+toolbar = DebugToolbarExtension(app)
 CORS(app)
+
+blueprint = make_google_blueprint(
+    client_id=client_id,
+    client_secret=client_secret,
+    reprompt_consent=True,
+    scope=["profile", "email"]
+)
+print(blueprint)
+app.register_blueprint(blueprint, url_prefix="/login")
+
 app.register_blueprint(user_routes, url_prefix='/user')
 app.register_blueprint(translation_routes, url_prefix='/translation')
+
 print("In app.py")
 questionNumber = 0
 questions = [{
@@ -52,7 +80,7 @@ def proxy(host, path):
 
 # @app.route("/")
 # def hello_world():
-#     return "<p>Hello test, World!</p>"
+#     return "<body><p>Hello test, World!</p></body>"
 
 
 @app.route("/question")

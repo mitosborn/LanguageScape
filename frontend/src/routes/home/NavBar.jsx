@@ -29,7 +29,7 @@ export default function NavBar() {
                             </Col>
                             <Col className={"d-flex justify-content-center"}>
                                 <Navbar.Text>
-                                    Signed in as: <a href="src/routes/home/#login">Mark Otto</a>
+                                    Signed in as: <a href="#login">Mark Otto</a>
                                 </Navbar.Text>
                             </Col>
                         </Row>
