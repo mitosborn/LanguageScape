@@ -11,7 +11,7 @@ user_routes = Blueprint('user', __name__)
 @user_routes.route("", methods=["GET"])
 def get_user():
     username = get_params(action='GetUser', param_lst=['username'])
-    return User.get_item_json_response(username)
+    return User.get_item_json_response(username[0])
 
 
 @user_routes.route("", methods=["POST"])

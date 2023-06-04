@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from pynamodb.attributes import (
     UTCDateTimeAttribute, UnicodeAttribute, MapAttribute, UnicodeSetAttribute
 )
@@ -5,7 +6,7 @@ from pynamodb.attributes import (
 from model.LangModel import LangModel
 
 
-class User(LangModel):
+class User(LangModel, UserMixin):
     class Meta(LangModel.Meta):
         table_name = 'users'
 
@@ -18,3 +19,28 @@ class User(LangModel):
     languages_learning = UnicodeSetAttribute(null=True)
     profile_img_url = UnicodeAttribute(null=True)
 
+    # @property
+    # def is_active(self):
+    #     return True
+    #
+    # @property
+    # def is_authenticated(self):
+    #     return self.is_active
+    #
+    # @property
+    # def is_anonymous(self):
+    #     return False
+    #
+    def get_id(self):
+        try:
+            return str(self.username)
+        except AttributeError:
+            raise NotImplementedError("No `id` attribute - override `get_id`") from None
+
+    def __eq__(self, other):
+        """
+        Checks the equality of two `UserMixin` objects using `get_id`.
+        """
+        if isinstance(other, User):
+            return self.get_id() == other.get_id()
+        return NotImplemented

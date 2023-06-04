@@ -1,17 +1,16 @@
 import os
 from datetime import datetime
-
-from flask import Flask, after_this_request, jsonify, request, render_template, redirect, url_for
-from flask_dance.contrib.google import make_google_blueprint, google
-from dotenv import load_dotenv
 from os import environ
-
-from flask_debugtoolbar import DebugToolbarExtension
-from requests import get
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_dance.consumer import oauth_authorized
+from flask_dance.contrib.google import make_google_blueprint, google
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager, current_user, login_user
+from requests import get
 from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
 from model.User import User
-from pynamodb.exceptions import (DeleteError, PutError)
 from routes.translationRoutes import translation_routes
 from routes.userRoutes import user_routes
 
@@ -34,17 +33,16 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY") or os.urandom(24)
 toolbar = DebugToolbarExtension(app)
 CORS(app)
 
-blueprint = make_google_blueprint(
+google_blueprint = make_google_blueprint(
     client_id=client_id,
     client_secret=client_secret,
     reprompt_consent=True,
     scope=["profile", "email"]
 )
-print(blueprint)
-app.register_blueprint(blueprint, url_prefix="/login")
-
+app.register_blueprint(google_blueprint, url_prefix="/login")
 app.register_blueprint(user_routes, url_prefix='/user')
 app.register_blueprint(translation_routes, url_prefix='/translation')
+login_manager = LoginManager(app)
 
 print("In app.py")
 questionNumber = 0
@@ -82,6 +80,39 @@ def proxy(host, path):
 # def hello_world():
 #     return "<body><p>Hello test, World!</p></body>"
 
+@login_manager.user_loader
+def load_user(user_id: str) -> User:
+    """Load the user with the given id."""
+    print("In load user: " + user_id)
+    return User.safe_get(user_id)
+
+
+@oauth_authorized.connect
+def google_log_in(blueprint, token):
+    print(f"Signed in successfully with {blueprint.name}; {blueprint.__dict__}")
+    print(f"Token: {token}")
+    resp = google.get("/oauth2/v1/userinfo")
+    response = resp.json()
+    username = response["email"].split("@")[0]
+    email = response["email"]
+    profile_img_url = response["picture"]
+    user = User.safe_get(username)
+    if not user:
+        user = User(username,
+                    email=email,
+                    preferred_language="eng",
+                    languages_spoken={"eng"},
+                    account_created=datetime.utcnow(),
+                    profile_img_url=profile_img_url)
+        user.save()
+    login_user(user=user)
+
+    print(user.__json__())
+    print(dir(blueprint))
+    return True
+    # If existing account, redirect to home/last page
+    # Otherwise, redirect to finish create User page
+
 
 @app.route("/question")
 def get_question():
@@ -91,6 +122,13 @@ def get_question():
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
 def get_app(path):
+    if google.authorized:
+        # resp = google.get("/oauth2/v1/userinfo")
+        print("You are {email} on Google".format(email="Something"))
+    else:
+        print("User not authorized")
+    print("Current user {current_user}".format(current_user=current_user))
+    print(type(current_user))
     if IS_DEV:
         return proxy(WEBPACK_DEV_SERVER_HOST, request.path)
     if 'assets' in path:
@@ -129,4 +167,3 @@ def all_exception_handler(error):
     if hasattr(error, "code"):
         return "Error: " + str(error.code)
     return str(error)
-
