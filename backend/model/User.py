@@ -27,10 +27,10 @@ class User(LangModel, UserMixin):
     # def is_authenticated(self):
     #     return self.is_active
     #
-    # @property
-    # def is_anonymous(self):
-    #     return False
-    #
+    @property
+    def user_id(self):
+        return self.username
+
     def get_id(self):
         try:
             return str(self.username)

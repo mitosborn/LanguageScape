@@ -9,6 +9,7 @@ from typing import List
 
 from constants import DEFAULT_READ_CAPACITY_UNITS, DEFAULT_WRITE_CAPACITY_UNITS
 from exceptions.model_exceptions import InvalidTranslationException
+from model.DynamoDBOAuthStorage import OAuth
 from model.LangModel import LangModel
 from model.Learnset import Learnset
 from model.Translation import Translation
@@ -17,7 +18,7 @@ from model.UserLearnsetProgress import UserLearnsetProgress
 from model.UserTranslationProgress import UserTranslationProgress
 from wonderwords import RandomWord, NoWordsToChoseFrom
 
-TABLES: List[LangModel] = [Learnset, Translation, User, UserLearnsetProgress, UserTranslationProgress]
+TABLES: List[LangModel] = [Learnset, Translation, User, UserLearnsetProgress, UserTranslationProgress, OAuth]
 LEARN_SET_NAME = '20 German Sentences'
 ORIGINAL_TEXT_LANGUAGE = 'deu'
 TRANSLATION_LANGUAGE = 'eng'
@@ -199,8 +200,8 @@ def create_tables():
 
 
 create_tables()
-create_default_user()
-create_default_learnset()
+# create_default_user()
+# create_default_learnset()
 # translations = create_default_learnset_translations(spacy_model="de_core_news_sm",
 #                                                     data_file_name="groupedByTranslations.json", debug=False)
 # upload_translations(translations) A comment

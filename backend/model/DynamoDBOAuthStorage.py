@@ -1,10 +1,9 @@
 from datetime import datetime
 
 from flask_dance.consumer.storage import BaseStorage
-from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.utils import FakeCache, first
-from flask_login import AnonymousUserMixin
-from pynamodb.attributes import UnicodeAttribute, MapAttribute, UTCDateTimeAttribute, NumberAttribute
+from flask_login import AnonymousUserMixin, current_user
+from pynamodb.attributes import UnicodeAttribute, MapAttribute, UTCDateTimeAttribute
 
 from model.LangModel import LangModel
 
@@ -155,6 +154,7 @@ class DynamoDBStorage(BaseStorage):
         # if token:
         #     return token
         # if not cached, make database queries
+        print("Called GET OAuth")
         provider = blueprint.name
         token = None
         uid = first([user_id, self.user_id, blueprint.config.get("user_id")])
@@ -162,7 +162,10 @@ class DynamoDBStorage(BaseStorage):
             _get_real_user(ref, self.anon_user)
             for ref in (user, self.user, blueprint.config.get("user"))
         )
-
+        print(u)
+        print(uid)
+        print(current_user)
+        print(dir(blueprint))
         if self.user_required and not u and not uid:
             raise ValueError("Cannot get OAuth token without an associated user")
 
@@ -183,6 +186,7 @@ class DynamoDBStorage(BaseStorage):
         return token
 
     def set(self, blueprint, token, user=None, user_id=None):
+        print("Called SET OAuth")
         uid = first([user_id, self.user_id, blueprint.config.get("user_id")])
         u = first(
             _get_real_user(ref, self.anon_user)
@@ -217,6 +221,7 @@ class DynamoDBStorage(BaseStorage):
     # )
 
     def delete(self, blueprint, user=None, user_id=None):
+        print("Called DELETE OAuth")
         # query = self.session.query(self.model).filter_by(provider=blueprint.name)
         uid = first([user_id, self.user_id, blueprint.config.get("user_id")])
         u = first(
@@ -227,22 +232,22 @@ class DynamoDBStorage(BaseStorage):
         if self.user_required and not u and not uid:
             raise ValueError("Cannot delete OAuth token without an associated user")
 
+        oauth = None
         # check for user ID
         if hasattr(self.model, "user_id") and uid:
-            query = query.filter_by(user_id=uid)
+            oauth = self.model.safe_get(user_id=uid, provider=blueprint.name)
         # check for user (relationship property)
         elif hasattr(self.model, "user") and u:
-            query = query.filter_by(user=u)
+            oauth = self.model.safe_get(user_id=u.user_id, provider=blueprint.name)
         # if we have the property, but not value, filter by None
-        elif hasattr(self.model, "user_id"):
-            query = query.filter_by(user_id=None)
+        # elif hasattr(self.model, "user_id"):
+        #     query = query.filter_by(user_id=None)
         # run query
-        query.delete()
-        self.session.commit()
+        oauth.delete()
         # invalidate cache
-        self.cache.delete(
-            self.make_cache_key(blueprint=blueprint, user=user, user_id=user_id)
-        )
+        # self.cache.delete(
+        #     self.make_cache_key(blueprint=blueprint, user=user, user_id=user_id)
+        # )
 
 
 def _get_real_user(user, anon_user=None):
