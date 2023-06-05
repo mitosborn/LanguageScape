@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask_dance.consumer.storage import BaseStorage
+from flask_dance.contrib.google import google
 from flask_dance.utils import FakeCache, first
 from flask_login import AnonymousUserMixin, current_user
 from pynamodb.attributes import UnicodeAttribute, MapAttribute, UTCDateTimeAttribute
@@ -222,23 +223,29 @@ class DynamoDBStorage(BaseStorage):
 
     def delete(self, blueprint, user=None, user_id=None):
         print("Called DELETE OAuth")
-        # query = self.session.query(self.model).filter_by(provider=blueprint.name)
-        uid = first([user_id, self.user_id, blueprint.config.get("user_id")])
-        u = first(
-            _get_real_user(ref, self.anon_user)
-            for ref in (user, self.user, blueprint.config.get("user"))
-        )
-
-        if self.user_required and not u and not uid:
-            raise ValueError("Cannot delete OAuth token without an associated user")
+        print(blueprint)
+        print(user)
+        print(user_id)
+        resp = google.get("/oauth2/v1/userinfo")
+        response = resp.json()
+        print(response)
+        uid = response["email"]
+        # uid = first([user_id, self.user_id, blueprint.config.get("user_id")])
+        # u = first(
+        #     _get_real_user(ref, self.anon_user)
+        #     for ref in (user, self.user, blueprint.config.get("user"))
+        # )
+        #
+        # if self.user_required and not u and not uid:
+        #     raise ValueError("Cannot delete OAuth token without an associated user")
 
         oauth = None
         # check for user ID
         if hasattr(self.model, "user_id") and uid:
             oauth = self.model.safe_get(user_id=uid, provider=blueprint.name)
         # check for user (relationship property)
-        elif hasattr(self.model, "user") and u:
-            oauth = self.model.safe_get(user_id=u.user_id, provider=blueprint.name)
+        # elif hasattr(self.model, "user") and u:
+        #     oauth = self.model.safe_get(user_id=u.user_id, provider=blueprint.name)
         # if we have the property, but not value, filter by None
         # elif hasattr(self.model, "user_id"):
         #     query = query.filter_by(user_id=None)

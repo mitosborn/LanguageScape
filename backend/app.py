@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from os import environ
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, redirect
+from flask import Flask, jsonify, request, redirect, session
 from flask_cors import CORS
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.google import make_google_blueprint, google
@@ -93,6 +93,7 @@ def load_user(user_id: str) -> User:
 @login_required
 def logout():
     print(f"Logging user {current_user} out".format(current_user=current_user))
+    del google_blueprint.token
     logout_user()
     return redirect("/")
 
@@ -132,11 +133,11 @@ def get_question():
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
 def get_app(path):
-    # if google.authorized:
-    #     # resp = google.get("/oauth2/v1/userinfo")
-    #     print("You are {email} on Google".format(email="Something"))
-    # else:
-    #     print("User not authorized")
+    if google.authorized:
+        # resp = google.get("/oauth2/v1/userinfo")
+        print("You are {email} on Google".format(email="Something"))
+    else:
+        print("User not authorized")
     print("Current user {current_user}".format(current_user=current_user))
     print(type(current_user))
     if IS_DEV:
