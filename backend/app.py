@@ -2,9 +2,9 @@ import os
 from datetime import datetime
 from os import environ
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, redirect, session
+from flask import Flask, jsonify, request, redirect, flash
 from flask_cors import CORS
-from flask_dance.consumer import oauth_authorized
+from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -125,19 +125,39 @@ def google_log_in(blueprint, token):
     # Otherwise, redirect to finish create User page
 
 
+# notify on OAuth provider error
+@oauth_error.connect_via(google_blueprint)
+def google_error(blueprint, message, response):
+    msg = "OAuth error from {name}! " "message={message} response={response}".format(
+        name=blueprint.name, message=message, response=response
+    )
+    flash(msg, category="error")
+
+
 @app.route("/question")
 def get_question():
     return jsonify(questions)
 
 
+@app.route("/currentUser")
+def get_current_user():
+    if current_user.is_authenticated:
+        return str(current_user)
+    else:
+        return "No current user"
+
+
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
 def get_app(path):
+    if not current_user.is_authenticated:
+        return redirect("login/google")
     if google.authorized:
-        # resp = google.get("/oauth2/v1/userinfo")
-        print("You are {email} on Google".format(email="Something"))
+        resp = google.get("/oauth2/v1/userinfo")
+        print("You are {email} on Google".format(email=resp.json()['email']))
     else:
         print("User not authorized")
+
     print("Current user {current_user}".format(current_user=current_user))
     print(type(current_user))
     if IS_DEV:
