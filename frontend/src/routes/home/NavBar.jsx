@@ -1,19 +1,11 @@
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import {Link, Outlet} from "react-router-dom";
-import {Button, Col, FormControl, FormGroup, Row} from "react-bootstrap";
-import {
-    MDBContainer,
-    MDBCollapse,
-    MDBNavbar,
-    MDBNavbarToggler,
-    MDBIcon,
-    MDBBtn,
-} from 'mdb-react-ui-kit';
+import {Link, Outlet, useNavigate} from "react-router-dom";
+import {Anchor, Col, Row} from "react-bootstrap";
+import {Button} from "@mui/material";
 
 export default function NavBar() {
+    const navigate = useNavigate();
     return (
         <Container className={"p-0"} fluid={true}>
             <Row id={"main-navbar"}>
@@ -28,9 +20,13 @@ export default function NavBar() {
                                 </Link>
                             </Col>
                             <Col className={"d-flex justify-content-center"}>
-                                <Navbar.Text>
-                                    Signed in as: <a href="#login">Mark Otto</a>
-                                </Navbar.Text>
+                                <a href={"/googleLogin"}>
+                                    <Button>
+                                    <Navbar.Text>
+                                        Login with Google
+                                    </Navbar.Text>
+                                </Button>
+                                </a>
                             </Col>
                         </Row>
                     </Container>

@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from os import environ
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, redirect, flash
+from flask import Flask, jsonify, request, redirect, flash, session
 from flask_cors import CORS
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.google import make_google_blueprint, google
@@ -10,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from requests import get
 from exceptions.request_exceptions import MalformedRequestException, MissingParameterException, EntityNotFoundException
-from model.DynamoDBOAuthStorage import DynamoDBStorage, OAuth
+# from model.DynamoDBOAuthStorage import DynamoDBStorage, OAuth
 from model.User import User
 from routes.translationRoutes import translation_routes
 from routes.userRoutes import user_routes
@@ -40,7 +40,7 @@ google_blueprint = make_google_blueprint(
     reprompt_consent=True,
     scope=["profile", "email"]
 )
-google_blueprint.storage = DynamoDBStorage(OAuth, user=current_user)
+# google_blueprint.storage = DynamoDBStorage(OAuth, user=current_user)
 app.register_blueprint(google_blueprint, url_prefix="/login")
 app.register_blueprint(user_routes, url_prefix='/user')
 app.register_blueprint(translation_routes, url_prefix='/translation')
@@ -98,6 +98,20 @@ def logout():
     return redirect("/")
 
 
+@app.route("/googleLogin")
+def google_login():
+    print("Ref: {ref}".format(ref=request.referrer))
+    ref = request.referrer
+    if not ref:
+        ref = "/"
+
+    if not google.authorized:
+        session["next"] = ref
+        return redirect("/login/google")
+    else:
+        return redirect(ref, code=302)  # redirect if needed
+
+
 @oauth_authorized.connect
 def google_log_in(blueprint, token):
     print(f"Signed in successfully with {blueprint.name}; {blueprint.__dict__}")
@@ -150,13 +164,19 @@ def get_current_user():
 @app.route("/", defaults={"path": "index.html"})
 @app.route("/<path:path>")
 def get_app(path):
-    if not current_user.is_authenticated:
-        return redirect("login/google")
-    if google.authorized:
-        resp = google.get("/oauth2/v1/userinfo")
-        print("You are {email} on Google".format(email=resp.json()['email']))
-    else:
-        print("User not authorized")
+    # if not current_user.is_authenticated:
+    #     return redirect("login/google")
+    # if google.authorized:
+    #     resp = google.get("/oauth2/v1/userinfo")
+    #     print("You are {email} on Google".format(email=resp.json()['email']))
+    # else:
+    #     print("User not authorized")
+
+    if 'next' in session.keys() and session['next'] and session['next'] != request.path:
+        print("Session: {sess}".format(sess=session['next']))
+        location = session['next']
+        session['next'] = None
+        return redirect(location)
 
     print("Current user {current_user}".format(current_user=current_user))
     print(type(current_user))
